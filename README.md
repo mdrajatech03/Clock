@@ -2,7 +2,7 @@
 
 A stylish, accurate, and responsive Digital Clock web application. This project displays the current time with high precision and features a modern, user-friendly interface.
 
----
+live open in browser (https://mdrajatech03.github.io/Clock/)
 
 ## 🚀 Key Features
 
@@ -13,6 +13,10 @@ A stylish, accurate, and responsive Digital Clock web application. This project 
 * **Lightweight:** Built with pure Vanilla JavaScript for maximum performance.
 
 ---
+
+
+## Screenshot 
+![Clock Screenshot](screenshot.jpg)
 
 ## 🛠️ Tech Stack
 
