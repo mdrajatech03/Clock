@@ -24,7 +24,8 @@ A stylish, accurate, and responsive Digital Clock web application. This project 
 
 ## ​👤 Author
 **Rajatech**
-GitHub (http://GitHub.com/mdrajatech)
+
+[GitHub: ](http://GitHub.com/mdrajatech03)
 
 ## 📁 Project Structure
 
