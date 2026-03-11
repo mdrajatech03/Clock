@@ -4,8 +4,6 @@ let sc = document.querySelector('#sc');
 
 setInterval(() => {
     let day = new Date();
-    
-    // Analog Math
     let hh = day.getHours() * 30;
     let mm = day.getMinutes() * 6;
     let ss = day.getSeconds() * 6;
@@ -14,25 +12,35 @@ setInterval(() => {
     mn.style.transform = `rotateZ(${mm}deg)`;
     sc.style.transform = `rotateZ(${ss}deg)`;
 
-    // Digital Clock
+    // digital clock
+    let hours = document.getElementById('hours');
+    let minutes = document.getElementById('minutes');
+    let seconds = document.getElementById('seconds');
+    let ampm = document.getElementById('ampm');
+
     let h = day.getHours();
     let m = day.getMinutes();
     let s = day.getSeconds();
 
     let am = h >= 12 ? "PM" : "AM";
 
-    // 24 to 12 hour conversion
-    let displayH = (h > 12) ? h - 12 : h;
-    if (displayH == 0) displayH = 12; // Midnight fix
+    // convert 24hr clock to 12hr clock
+    let h12 = h;
+    if (h12 > 12) {
+        h12 = h12 - 12;
+    }
+    if (h12 == 0) {
+        h12 = 12;
+    }
 
-    // Add leading zeros
-    displayH = (displayH < 10) ? "0" + displayH : displayH;
+    // add zero before single digit number
+    let displayH = (h12 < 10) ? "0" + h12 : h12;
     let displayM = (m < 10) ? "0" + m : m;
     let displayS = (s < 10) ? "0" + s : s;
 
-    document.getElementById('hours').innerHTML = displayH;
-    document.getElementById('minutes').innerHTML = displayM;
-    document.getElementById('seconds').innerHTML = displayS;
-    document.getElementById('ampm').innerHTML = am;
+    hours.innerHTML = displayH;
+    minutes.innerHTML = displayM;
+    seconds.innerHTML = displayS;
+    ampm.innerHTML = am;
 }, 1000);
 
