@@ -1,38 +1,43 @@
-let hr = document.querySelector('#hr');
-let mn = document.querySelector('#mn');
-let sc = document.querySelector('#sc');
+const hour = document.getElementById("hour");
+const minute = document.getElementById("minute");
+const second = document.getElementById("second");
 
-setInterval(() => {
+const h = document.getElementById("h");
+const m = document.getElementById("m");
+const s = document.getElementById("s");
+const ampm = document.getElementById("ampm");
+
+setInterval(()=>{
 
 let now = new Date();
 
-let hh = now.getHours() * 30;
-let mm = now.getMinutes() * 6;
-let ss = now.getSeconds() * 6;
+let hr = now.getHours();
+let min = now.getMinutes();
+let sec = now.getSeconds();
 
-hr.style.transform = `rotateZ(${hh + (mm/12)}deg)`;
-mn.style.transform = `rotateZ(${mm}deg)`;
-sc.style.transform = `rotateZ(${ss}deg)`;
+let hrRotation = 30*hr + min/2;
+let minRotation = 6*min;
+let secRotation = 6*sec;
 
-// DIGITAL CLOCK
+hour.style.transform=`translateX(-50%) rotate(${hrRotation}deg)`;
+minute.style.transform=`translateX(-50%) rotate(${minRotation}deg)`;
+second.style.transform=`translateX(-50%) rotate(${secRotation}deg)`;
 
-let h = now.getHours();
-let m = now.getMinutes();
-let s = now.getSeconds();
+/* DIGITAL */
 
-let am = h >= 12 ? "PM" : "AM";
+let am="AM";
 
-if(h>12){
-h = h - 12;
+if(hr>=12){
+am="PM";
 }
 
-h = h < 10 ? "0"+h : h;
-m = m < 10 ? "0"+m : m;
-s = s < 10 ? "0"+s : s;
+if(hr>12){
+hr=hr-12;
+}
 
-document.getElementById("hours").innerHTML = h;
-document.getElementById("minutes").innerHTML = m;
-document.getElementById("seconds").innerHTML = s;
-document.getElementById("ampm").innerHTML = am;
+h.innerHTML = hr<10?"0"+hr:hr;
+m.innerHTML = min<10?"0"+min:min;
+s.innerHTML = sec<10?"0"+sec:sec;
+ampm.innerHTML = am;
 
 },1000);
