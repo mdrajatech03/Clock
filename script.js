@@ -1,43 +1,38 @@
-const hour = document.getElementById("hour");
-const minute = document.getElementById("minute");
-const second = document.getElementById("second");
+let hr = document.querySelector('#hr');
+let mn = document.querySelector('#mn');
+let sc = document.querySelector('#sc');
 
-const h = document.getElementById("h");
-const m = document.getElementById("m");
-const s = document.getElementById("s");
-const ampm = document.getElementById("ampm");
+setInterval(() => {
+    let day = new Date();
+    
+    // Analog Math
+    let hh = day.getHours() * 30;
+    let mm = day.getMinutes() * 6;
+    let ss = day.getSeconds() * 6;
 
-setInterval(()=>{
+    hr.style.transform = `rotateZ(${hh + (mm / 12)}deg)`;
+    mn.style.transform = `rotateZ(${mm}deg)`;
+    sc.style.transform = `rotateZ(${ss}deg)`;
 
-let now = new Date();
+    // Digital Clock
+    let h = day.getHours();
+    let m = day.getMinutes();
+    let s = day.getSeconds();
 
-let hr = now.getHours();
-let min = now.getMinutes();
-let sec = now.getSeconds();
+    let am = h >= 12 ? "PM" : "AM";
 
-let hrRotation = 30*hr + min/2;
-let minRotation = 6*min;
-let secRotation = 6*sec;
+    // 24 to 12 hour conversion
+    let displayH = (h > 12) ? h - 12 : h;
+    if (displayH == 0) displayH = 12; // Midnight fix
 
-hour.style.transform=`translateX(-50%) rotate(${hrRotation}deg)`;
-minute.style.transform=`translateX(-50%) rotate(${minRotation}deg)`;
-second.style.transform=`translateX(-50%) rotate(${secRotation}deg)`;
+    // Add leading zeros
+    displayH = (displayH < 10) ? "0" + displayH : displayH;
+    let displayM = (m < 10) ? "0" + m : m;
+    let displayS = (s < 10) ? "0" + s : s;
 
-/* DIGITAL */
+    document.getElementById('hours').innerHTML = displayH;
+    document.getElementById('minutes').innerHTML = displayM;
+    document.getElementById('seconds').innerHTML = displayS;
+    document.getElementById('ampm').innerHTML = am;
+}, 1000);
 
-let am="AM";
-
-if(hr>=12){
-am="PM";
-}
-
-if(hr>12){
-hr=hr-12;
-}
-
-h.innerHTML = hr<10?"0"+hr:hr;
-m.innerHTML = min<10?"0"+min:min;
-s.innerHTML = sec<10?"0"+sec:sec;
-ampm.innerHTML = am;
-
-},1000);
