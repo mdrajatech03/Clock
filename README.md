@@ -1,6 +1,7 @@
 # 🕒 Real-Time Digital Clock
 
 A stylish, accurate, and responsive Digital Clock web application. This project displays the current time with high precision and features a modern, user-friendly interface.
+## Live Demo 🌐
 
 **[live open in browser](https://mdrajatech03.github.io/Clock/)**
 
