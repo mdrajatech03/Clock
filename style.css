@@ -13,8 +13,10 @@ justify-content:center;
 align-items:center;
 min-height:100vh;
 background:#2f363e;
-padding:20px;
+padding:15px;
 }
+
+/* container */
 
 .container{
 position:relative;
@@ -22,39 +24,47 @@ background:#2f363e;
 border-radius:20px;
 border-top-left-radius:200px;
 border-top-right-radius:200px;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:20px;
+
+width:100%;
+max-width:420px;
+
 box-shadow:25px 25px 75px rgba(0,0,0,0.75),
 10px 10px 70px rgba(0,0,0,0.25),
 inset 5px 5px 10px rgba(0,0,0,0.5),
 inset 5px 5px 20px rgba(255,255,255,0.2),
 inset -5px -5px 15px rgba(0,0,0,0.75);
-
-display:flex;
-flex-direction:column;
-align-items:center;
-padding:30px;
-width:100%;
-max-width:500px;
 }
+
+/* clock */
 
 .clock{
 position:relative;
+
 width:90vw;
-max-width:420px;
 height:90vw;
-max-height:420px;
+
+max-width:380px;
+max-height:380px;
+
 background:#2f363e;
 border-radius:50%;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+margin-bottom:25px;
 
 box-shadow:
 10px 50px 70px rgba(0,0,0,0.25),
 inset 5px 5px 10px rgba(0,0,0,0.5),
 inset 5px 5px 20px rgba(255,255,255,0.2),
 inset -5px -5px 15px rgba(0,0,0,0.75);
-
-display:flex;
-justify-content:center;
-align-items:center;
-margin-bottom:25px;
 }
 
 .clock::before{
@@ -68,21 +78,25 @@ border-radius:50%;
 z-index:100;
 }
 
+/* numbers */
+
 .clock span{
 position:absolute;
-inset:15px;
+inset:12px;
 color:#fff;
 text-align:center;
 transform:rotate(calc(30deg * var(--i)));
 }
 
 .clock span b{
-font-size:clamp(1rem,3vw,1.8rem);
+font-size:clamp(1rem,4vw,1.8rem);
 opacity:.25;
 font-weight:600;
 display:inline-block;
 transform:rotate(calc(-30deg * var(--i)));
 }
+
+/* circles */
 
 .circle{
 position:absolute;
@@ -134,15 +148,17 @@ background:var(--clr);
 box-shadow:0 0 20px var(--clr),0 0 60px var(--clr);
 }
 
-/* DIGITAL CLOCK */
+/* digital clock */
 
 #time{
 display:flex;
 padding:10px 20px;
-font-size:clamp(1.2rem,4vw,2rem);
-font-weight:600;
+
+font-size:clamp(1.2rem,5vw,2rem);
+
 border:2px solid rgba(0,0,0,0.5);
 border-radius:40px;
+
 box-shadow:
 5px 5px 10px rgba(0,0,0,0.5),
 inset 5px 5px 20px rgba(255,255,255,0.2),
@@ -151,7 +167,7 @@ inset -5px -5px 15px rgba(0,0,0,0.75);
 
 #time div{
 position:relative;
-width:50px;
+width:45px;
 text-align:center;
 font-weight:500;
 color:var(--clr);
@@ -179,4 +195,24 @@ animation:blink 1s steps(1) infinite;
 @keyframes blink{
 0%{opacity:1;}
 50%{opacity:0;}
+}
+
+/* MOBILE EXTRA FIX */
+
+@media (max-width:480px){
+
+.clock{
+width:85vw;
+height:85vw;
+}
+
+#time{
+font-size:18px;
+padding:8px 15px;
+}
+
+#time div{
+width:35px;
+}
+
 }
