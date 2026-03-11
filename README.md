@@ -4,7 +4,7 @@ A stylish, accurate, and responsive Digital Clock web application. This project 
 
 ## Live Demo 🌐
 
-**[live open in browser](https://mdrajatech03.github.io/Clock/)**
+**[Click Here](https://mdrajatech03.github.io/Clock/)**
 
 ## 🚀 Key Features
 
