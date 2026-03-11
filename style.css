@@ -1,196 +1,117 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300&family=Oswald:wght@400;500&display=swap');
-
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:'Oswald',sans-serif;
+font-family:Arial, Helvetica, sans-serif;
 }
 
 body{
+background:#2f363e;
 display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
-background:#2f363e;
-padding:20px;
 }
 
 .container{
-position:relative;
-background:#2f363e;
-border-radius:20px;
-border-top-left-radius:225px;
-border-top-right-radius:225px;
-
-box-shadow:25px 25px 75px rgba(0,0,0,0.75),
-10px 10px 70px rgba(0,0,0,0.25),
-inset 5px 5px 10px rgba(0,0,0,0.5),
-inset 5px 5px 20px rgba(255,255,255,0.2),
-inset -5px -5px 15px rgba(0,0,0,0.75);
-
 display:flex;
 flex-direction:column;
 align-items:center;
-padding:20px;
+gap:30px;
 }
 
 /* CLOCK */
 
 .clock{
-position:relative;
 
-width:clamp(280px,90vw,450px);
-height:clamp(280px,90vw,450px);
+width:min(80vw,420px);
+height:min(80vw,420px);
 
 background:#2f363e;
 border-radius:50%;
-
-box-shadow:10px 50px 70px rgba(0,0,0,0.25),
-inset 5px 5px 10px rgba(0,0,0,0.5),
-inset 5px 5px 20px rgba(255,255,255,0.2),
-inset -5px -5px 15px rgba(0,0,0,0.75);
+position:relative;
 
 display:flex;
 justify-content:center;
 align-items:center;
 
-margin-bottom:30px;
+box-shadow:
+20px 20px 60px #1f252b,
+-20px -20px 60px #3f4751,
+inset 5px 5px 15px rgba(0,0,0,0.5),
+inset -5px -5px 15px rgba(255,255,255,0.1);
 }
 
-.clock::before{
-content:'';
-position:absolute;
-width:8px;
-height:8px;
-background:#2f363e;
-border:3px solid #fff;
-border-radius:50%;
-z-index:100000;
-}
+/* NUMBERS */
 
 .clock span{
 position:absolute;
-inset:20px;
-color:#fff;
-text-align:center;
+color:white;
+font-size:clamp(14px,3vw,22px);
+font-weight:bold;
+
 transform:rotate(calc(30deg * var(--i)));
+inset:15px;
+text-align:center;
 }
 
-.clock span b{
-font-size:clamp(1rem,4vw,2em);
-opacity:.25;
-font-weight:600;
-display:inline-block;
-transform:rotate(calc(-30deg * var(--i)));
+.clock span::before{
+content:attr(style);
 }
 
-/* CLOCK HANDS */
+/* CENTER */
 
-.circle{
+.center-dot{
 position:absolute;
-
-width:clamp(190px,65vw,300px);
-height:clamp(190px,65vw,300px);
-
-border:2px solid rgba(0,0,0,0.25);
+width:12px;
+height:12px;
+background:white;
 border-radius:50%;
-
-display:flex;
-justify-content:center;
-align-items:flex-start;
-
 z-index:10;
 }
 
-.circle i{
+/* HANDS */
+
+.hand{
 position:absolute;
-width:6px;
-height:50%;
-background:var(--clr);
-opacity:.75;
+bottom:50%;
+left:50%;
 transform-origin:bottom;
-transform:scaleY(.5);
+transform:translateX(-50%);
 }
 
-.circle:nth-child(1) i{
-width:2px;
-}
-
-.circle:nth-child(2) i{
+.hour{
 width:6px;
+height:25%;
+background:#ff2972;
+border-radius:10px;
 }
 
-.circle2{
-width:clamp(150px,52vw,240px);
-height:clamp(150px,52vw,240px);
-z-index:9;
+.minute{
+width:4px;
+height:35%;
+background:#fee800;
+border-radius:10px;
 }
 
-.circle3{
-width:clamp(120px,40vw,180px);
-height:clamp(120px,40vw,180px);
-z-index:8;
-}
-
-.circle::before{
-content:'';
-position:absolute;
-top:-8.5px;
-width:15px;
-height:15px;
-border-radius:50%;
-background:var(--clr);
-box-shadow:0 0 20px var(--clr),0 0 60px var(--clr)
+.second{
+width:2px;
+height:45%;
+background:#04fc43;
 }
 
 /* DIGITAL CLOCK */
 
-#time{
-margin-bottom:40px;
-display:flex;
+.digital{
+
+color:white;
+font-size:clamp(18px,4vw,28px);
+
 padding:10px 20px;
-
-font-size:clamp(1.2rem,4vw,2em);
-
-font-weight:600;
-
-border:2px solid rgba(0,0,0,0.5);
 border-radius:40px;
 
-box-shadow:5px 5px 10px rgba(0,0,0,0.5),
-inset 5px 5px 20px rgba(255,255,255,0.2),
-inset -5px -5px 15px rgba(0,0,0,0.75);
-}
+box-shadow:
+inset 3px 3px 10px rgba(0,0,0,0.5),
+inset -3px -3px 10px rgba(255,255,255,0.1);
 
-#time div{
-position:relative;
-width:60px;
-text-align:center;
-font-weight:500;
-color:var(--clr);
-}
-
-#time div:nth-child(1)::after,
-#time div:nth-child(2)::after{
-content:':';
-position:absolute;
-right:-4px;
-}
-
-#time div:last-child{
-font-size:.5em;
-display:flex;
-justify-content:center;
-align-items:center;
-color:#fff;
-}
-
-#time div:nth-child(2)::after{
-animation:animate 1s steps(1) infinite;
-}
-
-@keyframes animate{
-0%{opacity:1;}
-50%{opacity:0;}
 }
