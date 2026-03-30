@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Clock - Sound Fixed</title>
+    <title>Elite Smart Clock - Sound Master</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
@@ -40,12 +40,6 @@
             box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
         }
 
-        .theme-switch {
-            padding: 8px 15px; border-radius: 20px; border: none; cursor: pointer;
-            background: var(--bg-color); color: var(--text-color); font-weight: 600;
-            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-        }
-
         .container {
             background: var(--bg-color); border-radius: 40px;
             box-shadow: 20px 20px 60px var(--shadow-dark), -20px -20px 60px var(--shadow-light);
@@ -54,11 +48,10 @@
         }
 
         #weather-status { font-size: 0.8em; color: var(--accent-color); font-weight: 600; margin-bottom: 5px; }
-        #quote-box { font-size: 0.75em; color: var(--text-color); font-style: italic; text-align: center; margin-bottom: 20px; min-height: 35px; opacity: 0.8; }
 
         .clock {
             position: relative; width: 220px; height: 220px;
-            background: var(--bg-color); border-radius: 50%; border: none;
+            background: var(--bg-color); border-radius: 50%;
             box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light),
                         inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
             display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
@@ -85,7 +78,7 @@
         select, input[type="time"] {
             width: 85%; background: var(--bg-color); border: none; padding: 12px; border-radius: 12px;
             box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
-            color: var(--text-color); outline: none; text-align: center; font-size: 0.9em;
+            color: var(--text-color); outline: none; text-align: center;
         }
 
         button {
@@ -95,25 +88,24 @@
         }
 
         #stopBtn { color: #ff2972; display: none; }
-        #alarmStatus { color: var(--accent-color); font-size: 0.85em; font-weight: 600; height: 18px; margin-top: 5px; }
-
-        .config-row { display: flex; align-items: center; gap: 10px; font-size: 0.75em; color: var(--text-color); margin-top: 10px; }
-        input[type="color"] { border: none; width: 25px; height: 25px; cursor: pointer; background: none; }
+        #alarmStatus { color: var(--accent-color); font-size: 0.85em; font-weight: 600; height: 18px; text-align: center; }
     </style>
 </head>
-<body>
+<body onclick="unlockAudio()">
 
     <div class="top-bar">
         <div class="info-pill" id="battery">🔋 --%</div>
         <div class="info-pill" id="temp-display">🌡️ --°C</div>
-        <button class="theme-switch" onclick="toggleTheme()">🌓 Theme</button>
+        <button class="info-pill" onclick="toggleTheme()">🌓 Theme</button>
     </div>
 
-    <audio id="alarmAudio" loop preload="auto"></audio>
+    <audio id="alarmAudio" loop preload="auto">
+        <source id="audioSource" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="container">
         <div id="weather-status">Weather: Loading...</div>
-        <div id="quote-box">"Make it happen."</div>
+        <div id="quote-box" style="font-size: 0.7em; margin-bottom: 15px; opacity: 0.7;">"Time is precious."</div>
         
         <div class="clock">
             <div class="circle" id="hr" style="--clr:var(--text-color);"><i></i></div>
@@ -130,10 +122,10 @@
         </div>
 
         <div class="controls">
-            <select id="soundSelect" onchange="loadNewSound()">
+            <select id="soundSelect" onchange="changeSound()">
+                <option value="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3">Classic Bell</option>
                 <option value="https://www.soundjay.com/buttons/beep-01a.mp3">Digital Beep</option>
-                <option value="https://www.soundjay.com/clock/alarm-clock-01.mp3">Classic Bell</option>
-                <option value="https://www.soundjay.com/nature/ocean-wave-1.mp3">Nature Waves</option>
+                <option value="https://www.soundjay.com/clock/alarm-clock-01.mp3">Retro Alarm</option>
             </select>
 
             <input type="time" id="alarmTime">
@@ -144,101 +136,63 @@
             </div>
             
             <p id="alarmStatus"></p>
-
-            <div class="config-row">
-                <span>Clock Color:</span>
-                <input type="color" id="colorPicker" value="#04fc43" onchange="updateAccent(this.value)">
-            </div>
         </div>
     </div>
 
     <script>
         const audio = document.getElementById('alarmAudio');
-        const alarmStatus = document.getElementById('alarmStatus');
-        const alarmInput = document.getElementById('alarmTime');
         const soundSelect = document.getElementById('soundSelect');
-        
+        const alarmInput = document.getElementById('alarmTime');
+        const alarmStatus = document.getElementById('alarmStatus');
         let activeAlarm = localStorage.getItem('userAlarm') || null;
-        const quotes = ["Believe in yourself!", "Time is gold.", "Success is a journey.", "Stay focused!"];
 
-        // Initialization
+        // Force Unlock on any click
+        function unlockAudio() {
+            audio.play().then(() => {
+                audio.pause();
+                console.log("Audio Unlocked");
+            }).catch(() => {});
+        }
+
         window.onload = () => {
             if(activeAlarm) {
                 alarmInput.value = activeAlarm;
                 alarmStatus.innerText = "⏰ Active: " + activeAlarm;
             }
-            const savedSound = localStorage.getItem('alarmSound');
-            if(savedSound) {
-                soundSelect.value = savedSound;
-            }
-            loadNewSound();
             fetchWeather();
         };
 
-        function loadNewSound() {
+        function changeSound() {
             audio.src = soundSelect.value;
-            localStorage.setItem('alarmSound', soundSelect.value);
-            audio.load(); 
+            audio.load();
+            // Preview sound
+            audio.play().then(() => {
+                setTimeout(() => { if(!ringing) audio.pause(); }, 1500);
+            }).catch(() => {});
         }
 
         function setAlarm() {
-            const timeVal = alarmInput.value;
-            if(timeVal) {
-                activeAlarm = timeVal;
-                localStorage.setItem('userAlarm', timeVal);
-                alarmStatus.innerText = "⏰ Alarm set: " + timeVal;
-                
-                // CRITICAL: Play then immediately pause to unlock audio on mobile
-                audio.play().then(() => {
-                    audio.pause();
-                    audio.currentTime = 0;
-                }).catch(e => console.log("Audio unlock error"));
-
-                alert("Alarm Set! Sound testing...");
+            if(alarmInput.value) {
+                activeAlarm = alarmInput.value;
+                localStorage.setItem('userAlarm', activeAlarm);
+                alarmStatus.innerText = "⏰ Set for " + activeAlarm;
+                unlockAudio(); // Important
+                alert("Alarm Set! Sound will play at " + activeAlarm);
             }
         }
 
+        let ringing = false;
         function stopAlarm() {
             audio.pause();
             audio.currentTime = 0;
+            ringing = false;
             activeAlarm = null;
             localStorage.removeItem('userAlarm');
             document.getElementById('stopBtn').style.display = "none";
             alarmStatus.innerText = "Alarm Stopped.";
-            alarmInput.value = "";
         }
 
-        // Weather
-        const API_KEY = "ca20508697617b874b4c2487d2b91370";
-        function fetchWeather() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${API_KEY}&units=metric`)
-                    .then(r => r.json()).then(data => {
-                        document.getElementById('weather-status').innerText = `${data.name}: ${data.weather[0].main}`;
-                        document.getElementById('temp-display').innerText = `🌡️ ${Math.round(data.main.temp)}°C`;
-                    }).catch(() => {});
-                });
-            }
-        }
-
-        // Theme
-        function toggleTheme() {
-            const body = document.body;
-            const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-        }
-        if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
-
-        function updateAccent(color) {
-            document.documentElement.style.setProperty('--accent-color', color);
-            localStorage.setItem('accentColor', color);
-        }
-        if(localStorage.getItem('accentColor')) updateAccent(localStorage.getItem('accentColor'));
-
-        // Main Loop
-        let qIdx = 0;
+        // Main Clock Logic
         setInterval(() => {
             const d = new Date();
             const h = d.getHours().toString().padStart(2, '0');
@@ -253,28 +207,37 @@
             document.getElementById('minutes').innerText = m;
             document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
 
-            // Alarm Trigger
-            if (activeAlarm === (h + ":" + m) && s === 0) {
+            // Trigger Alarm
+            if (activeAlarm === (h + ":" + m) && s === 0 && !ringing) {
+                ringing = true;
                 audio.play().catch(() => {
-                    alarmStatus.innerText = "🔊 TAP SCREEN TO HEAR ALARM!";
-                    window.addEventListener('click', () => audio.play(), {once:true});
+                    alarmStatus.innerText = "🚨 TAP SCREEN NOW!";
                 });
                 document.getElementById('stopBtn').style.display = "inline-block";
             }
-
-            if(s % 20 === 0) {
-                document.getElementById('quote-box').innerText = `"${quotes[qIdx % quotes.length]}"`;
-                qIdx++;
-            }
         }, 1000);
 
-        // Battery
-        if(navigator.getBattery) {
-            navigator.getBattery().then(b => {
-                const up = () => document.getElementById('battery').innerText = `🔋 ${Math.round(b.level * 100)}%`;
-                up(); b.onlevelchange = up;
+        // Weather & Theme (Shortened)
+        function toggleTheme() {
+            const b = document.body;
+            b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+
+        function fetchWeather() {
+            const key = "ca20508697617b874b4c2487d2b91370";
+            navigator.geolocation.getCurrentPosition(p => {
+                fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${p.coords.latitude}&lon=${p.coords.longitude}&appid=${key}&units=metric`)
+                .then(r => r.json()).then(data => {
+                    document.getElementById('weather-status').innerText = data.name + ": " + Math.round(data.main.temp) + "°C";
+                });
             });
         }
+        
+        // Battery
+        if(navigator.getBattery) navigator.getBattery().then(b => {
+            const u = () => document.getElementById('battery').innerText = `🔋 ${Math.round(b.level * 100)}%`;
+            u(); b.onlevelchange = u;
+        });
     </script>
 </body>
 </html>
