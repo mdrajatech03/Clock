@@ -3,33 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clock-Made By Me</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Ultimate Smart Clock Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #1a1e23, #2f363e, #1a1e23);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            position: relative;
+            background: rgba(47, 54, 62, 0.9);
+            backdrop-filter: blur(10px); /* Glass effect */
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        /* Date Display */
+        #date-box {
+            color: #fff;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+
+        .clock {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            background: #2f363e;
+            border-radius: 50%;
+            box-shadow: 10px 50px 70px rgba(0, 0, 0, 0.25),
+                        inset 5px 5px 10px rgba(0, 0, 0, 0.5),
+                        inset 5px 5px 20px rgba(255, 255, 255, 0.2),
+                        inset -5px -5px 15px rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 450px) {
+            .clock { width: 320px; height: 320px; }
+        }
+
+        .clock::before {
+            content: '';
+            position: absolute;
+            width: 10px; height: 10px;
+            background: #fff; border-radius: 50%; z-index: 1000;
+        }
+
+        .clock span {
+            position: absolute;
+            inset: 15px;
+            color: #fff;
+            text-align: center;
+            transform: rotate(calc(30deg * var(--i)));
+        }
+
+        .clock span b {
+            font-size: 1.2em; opacity: 0.3;
+            display: inline-block;
+            transform: rotate(calc(-30deg * var(--i)));
+        }
+
+        .circle {
+            position: absolute;
+            width: 90%; height: 90%;
+            display: flex; justify-content: center; align-items: flex-start;
+        }
+
+        .circle i {
+            position: absolute;
+            width: 4px; height: 50%;
+            background: var(--clr);
+            border-radius: 4px;
+            transform-origin: bottom;
+            transform: scaleY(0.5);
+        }
+
+        .circle2 { width: 75%; height: 75%; }
+        .circle3 { width: 60%; height: 60%; }
+
+        .circle::before {
+            content: '';
+            position: absolute;
+            top: -5px; width: 10px; height: 10px;
+            border-radius: 50%; background: var(--clr);
+            box-shadow: 0 0 20px var(--clr);
+        }
+
+        #time {
+            display: flex;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        #time div { width: 60px; text-align: center; color: var(--clr); }
+        #time div:last-child { font-size: 0.5em; width: 45px; color: #fff; margin-top: 15px; }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            width: 100%;
+        }
+
+        input[type="time"] {
+            background: #1a1e23;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .btn-group { display: flex; gap: 10px; }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            background: #04fc43;
+            color: #2f363e;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.stop-btn { background: #ff2972; color: #fff; display: none; }
+        button:hover { filter: brightness(1.1); transform: scale(1.05); }
+
+        #alarmStatus { color: #aaa; font-size: 0.85em; text-align: center; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="clock">
 
+    <audio id="alarmAudio" loop>
+        <source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div id="date-box">Loading Date...</div>
+
+        <div class="clock">
             <div class="circle" id="sc" style="--clr:#04fc43;"><i></i></div>
             <div class="circle circle2" id="mn" style="--clr:#fee800;"><i></i></div>
             <div class="circle circle3" id="hr" style="--clr:#ff2972;"><i></i></div>
              
-
-            <span style="--i:1;"><b>1</b></span>
-            <span style="--i:2;"><b>2</b></span>
-            <span style="--i:3;"><b>3</b></span>
-            <span style="--i:4;"><b>4</b></span>
-            <span style="--i:5;"><b>5</b></span>
-            <span style="--i:6;"><b>6</b></span>
-            <span style="--i:7;"><b>7</b></span>
-            <span style="--i:8;"><b>8</b></span>
-            <span style="--i:9;"><b>9</b></span>
-            <span style="--i:10;"><b>10</b></span>
-            <span style="--i:11;"><b>11</b></span>
-            <span style="--i:12;"><b>12</b></span>
+            <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span>
+            <span style="--i:3;"><b>3</b></span><span style="--i:4;"><b>4</b></span>
+            <span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span>
+            <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span>
+            <span style="--i:9;"><b>9</b></span><span style="--i:10;"><b>10</b></span>
+            <span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
         </div>
-
-        <!-- digital clock -->
 
         <div id="time">
             <div id="hours" style="--clr:#ff2972;">00</div>
@@ -37,8 +199,84 @@
             <div id="seconds" style="--clr:#04fc43;">00</div>
             <div id="ampm">AM</div>
         </div>
+
+        <div class="controls">
+            <input type="time" id="alarmTime">
+            <div class="btn-group">
+                <button onclick="setAlarm()">Set Alarm</button>
+                <button id="stopBtn" class="stop-btn" onclick="stopAlarm()">Stop Alarm</button>
+            </div>
+            <p id="alarmStatus"></p>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const hr = document.querySelector('#hr');
+        const mn = document.querySelector('#mn');
+        const sc = document.querySelector('#sc');
+        const alarmAudio = document.getElementById('alarmAudio');
+        const stopBtn = document.getElementById('stopBtn');
+        const dateBox = document.getElementById('date-box');
+
+        // Load saved alarm from storage
+        let savedAlarm = localStorage.getItem('userAlarm');
+        if(savedAlarm) {
+            document.getElementById('alarmTime').value = savedAlarm;
+            document.getElementById('alarmStatus').innerHTML = "⏰ Active: " + savedAlarm;
+        }
+
+        function setAlarm() {
+            let timeVal = document.getElementById('alarmTime').value;
+            if(timeVal) {
+                localStorage.setItem('userAlarm', timeVal);
+                document.getElementById('alarmStatus').innerHTML = "⏰ Alarm set for " + timeVal;
+                alert("Alarm Saved!");
+            }
+        }
+
+        function stopAlarm() {
+            alarmAudio.pause();
+            alarmAudio.currentTime = 0;
+            stopBtn.style.display = "none";
+            localStorage.removeItem('userAlarm');
+            document.getElementById('alarmStatus').innerHTML = "Alarm Cleared.";
+        }
+
+        setInterval(() => {
+            let now = new Date();
+            
+            // 1. Update Date
+            let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateBox.innerHTML = now.toLocaleDateString('en-US', options);
+
+            // 2. Analog Logic
+            let hh = now.getHours();
+            let mm = now.getMinutes();
+            let ss = now.getSeconds();
+            
+            hr.style.transform = `rotateZ(${(hh * 30) + (mm / 12)}deg)`;
+            mn.style.transform = `rotateZ(${mm * 6}deg)`;
+            sc.style.transform = `rotateZ(${ss * 6}deg)`; 
+
+            // 3. Digital Logic
+            let h = hh > 12 ? hh - 12 : hh;
+            if (h == 0) h = 12;
+            let am = hh >= 12 ? "PM" : "AM";
+
+            document.getElementById('hours').innerHTML = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerHTML = mm.toString().padStart(2, '0');
+            document.getElementById('seconds').innerHTML = ss.toString().padStart(2, '0');
+            document.getElementById('ampm').innerHTML = am;
+
+            // 4. Alarm Logic
+            let checkTime = hh.toString().padStart(2, '0') + ":" + mm.toString().padStart(2, '0');
+            let activeAlarm = localStorage.getItem('userAlarm');
+
+            if (activeAlarm === checkTime && ss === 0) {
+                alarmAudio.play();
+                stopBtn.style.display = "block";
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
