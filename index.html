@@ -3,190 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Smart Clock - Pro Version</title>
+    <title>Smart Clock Pro - Fixed Version</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #1a1e23;
-            padding: 20px;
-        }
-
-        .container {
-            position: relative;
-            background: #2f363e;
-            border-radius: 30px;
-            box-shadow: 25px 25px 75px rgba(0, 0, 0, 0.75),
-                        inset 5px 5px 20px rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 40px 20px;
-            width: 100%;
-            max-width: 450px;
-        }
-
-        #date-box {
-            color: #fff;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-            opacity: 0.8;
-        }
-
-        .clock {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            background: #2f363e;
-            border-radius: 50%;
-            box-shadow: 10px 50px 70px rgba(0, 0, 0, 0.25),
-                        inset 5px 5px 10px rgba(0, 0, 0, 0.5),
-                        inset 5px 5px 20px rgba(255, 255, 255, 0.2),
-                        inset -5px -5px 15px rgba(0, 0, 0, 0.75);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        @media (min-width: 450px) {
-            .clock { width: 320px; height: 320px; }
-        }
-
-        .clock::before {
-            content: '';
-            position: absolute;
-            width: 10px; height: 10px;
-            background: #fff; border-radius: 50%; z-index: 1000;
-        }
-
-        .clock span {
-            position: absolute;
-            inset: 15px;
-            color: #fff;
-            text-align: center;
-            transform: rotate(calc(30deg * var(--i)));
-        }
-
-        .clock span b {
-            font-size: 1.2em; opacity: 0.2;
-            display: inline-block;
-            transform: rotate(calc(-30deg * var(--i)));
-        }
-
-        .circle {
-            position: absolute;
-            width: 90%; height: 90%;
-            display: flex; justify-content: center; align-items: flex-start;
-        }
-
-        .circle i {
-            position: absolute;
-            width: 4px; height: 50%;
-            background: var(--clr);
-            border-radius: 4px;
-            transform-origin: bottom;
-            transform: scaleY(0.5);
-        }
-
-        .circle2 { width: 75%; height: 75%; }
-        .circle3 { width: 60%; height: 60%; }
-
-        .circle::before {
-            content: '';
-            position: absolute;
-            top: -6px; width: 12px; height: 12px;
-            border-radius: 50%; background: var(--clr);
-            box-shadow: 0 0 20px var(--clr);
-        }
-
-        #time {
-            display: flex;
-            margin-bottom: 20px;
-            font-size: 2em;
-            font-weight: 600;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #1a1e23; padding: 20px; }
+        .container { position: relative; background: #2f363e; border-radius: 30px; box-shadow: 25px 25px 75px rgba(0, 0, 0, 0.75); display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 40px 20px; width: 100%; max-width: 450px; }
+        #date-box { color: #fff; font-size: 1.1em; margin-bottom: 20px; opacity: 0.8; }
+        .clock { position: relative; width: 250px; height: 250px; background: #2f363e; border-radius: 50%; box-shadow: inset 5px 5px 10px rgba(0,0,0,0.5), inset -5px -5px 15px rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
+        .clock span { position: absolute; inset: 15px; transform: rotate(calc(30deg * var(--i))); text-align: center; color: #fff; }
+        .clock span b { font-size: 1.2em; opacity: 0.2; display: inline-block; transform: rotate(calc(-30deg * var(--i))); }
+        .circle { position: absolute; width: 90%; height: 90%; display: flex; justify-content: center; align-items: flex-start; }
+        .circle i { position: absolute; width: 4px; height: 50%; background: var(--clr); border-radius: 4px; transform-origin: bottom; transform: scaleY(0.5); }
+        #time { display: flex; margin-bottom: 20px; font-size: 2em; font-weight: 600; }
         #time div { width: 60px; text-align: center; color: var(--clr); }
-        #time div:last-child { font-size: 0.5em; width: 45px; color: #fff; margin-top: 18px; }
-
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-            width: 100%;
-        }
-
-        input[type="time"] {
-            background: #1a1e23;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        button {
-            padding: 12px 30px;
-            border-radius: 30px;
-            border: none;
-            background: #04fc43;
-            color: #1a1e23;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover { transform: scale(1.05); background: #02d137; }
-
+        .controls { display: flex; flex-direction: column; gap: 15px; align-items: center; width: 100%; }
+        input[type="time"] { background: #1a1e23; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 12px; outline: none; }
+        button { padding: 12px 30px; border-radius: 30px; border: none; background: #04fc43; color: #1a1e23; font-weight: 600; cursor: pointer; transition: 0.3s; }
         #stopBtn { background: #ff2972; color: #fff; display: none; margin-top: 10px; }
-
-        #alarmStatus { color: #04fc43; font-size: 0.9em; margin-top: 10px; min-height: 1.2em; }
+        #alarmStatus { color: #04fc43; font-size: 0.9em; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <audio id="alarmAudio" loop>
-        <source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg">
+    <audio id="alarmAudio" preload="auto" loop>
+        <source src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
         <div id="date-box">Loading...</div>
-
         <div class="clock">
             <div class="circle" id="sc" style="--clr:#04fc43;"><i></i></div>
             <div class="circle circle2" id="mn" style="--clr:#fee800;"><i></i></div>
             <div class="circle circle3" id="hr" style="--clr:#ff2972;"><i></i></div>
-             
-            <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span>
-            <span style="--i:3;"><b>3</b></span><span style="--i:4;"><b>4</b></span>
-            <span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span>
-            <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span>
-            <span style="--i:9;"><b>9</b></span><span style="--i:10;"><b>10</b></span>
-            <span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
+            <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span><span style="--i:3;"><b>3</b></span><span style="--i:4;"><b>4</b></span><span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span><span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span><span style="--i:9;"><b>9</b></span><span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
         </div>
-
         <div id="time">
             <div id="hours" style="--clr:#ff2972;">00</div>
             <div id="minutes" style="--clr:#fee800;">00</div>
             <div id="seconds" style="--clr:#04fc43;">00</div>
-            <div id="ampm">AM</div>
         </div>
-
         <div class="controls">
             <input type="time" id="alarmTime">
             <button id="setBtn" onclick="setAlarm()">Set Alarm</button>
@@ -196,29 +52,35 @@
     </div>
 
     <script>
-        const hr = document.querySelector('#hr');
-        const mn = document.querySelector('#mn');
-        const sc = document.querySelector('#sc');
         const alarmAudio = document.getElementById('alarmAudio');
-        const stopBtn = document.getElementById('stopBtn');
+        const alarmInput = document.getElementById('alarmTime');
         const alarmStatus = document.getElementById('alarmStatus');
-        const dateBox = document.getElementById('date-box');
+        const stopBtn = document.getElementById('stopBtn');
 
-        // Check if there's a saved alarm in localStorage
-        let savedAlarm = localStorage.getItem('userAlarm');
-        if(savedAlarm) {
-            document.getElementById('alarmTime').value = savedAlarm;
-            alarmStatus.innerHTML = "⏰ Active Alarm: " + savedAlarm;
-        }
+        // 1. REFRESH FIX: Page load hote hi purana alarm check karein
+        window.onload = () => {
+            let savedAlarm = localStorage.getItem('userAlarm');
+            if(savedAlarm) {
+                alarmInput.value = savedAlarm;
+                alarmStatus.innerHTML = "⏰ Active: " + savedAlarm;
+            }
+        };
 
         function setAlarm() {
-            const timeVal = document.getElementById('alarmTime').value;
+            const timeVal = alarmInput.value;
             if(timeVal) {
                 localStorage.setItem('userAlarm', timeVal);
                 alarmStatus.innerHTML = "⏰ Alarm set for " + timeVal;
-                alert("Alarm Set Successfully!");
+                
+                // AUDIO FIX: Silent play taaki browser audio allow kar de
+                alarmAudio.play().then(() => {
+                    alarmAudio.pause();
+                    alarmAudio.currentTime = 0;
+                });
+                
+                alert("Alarm Set & Audio Unblocked!");
             } else {
-                alert("Please select a time first!");
+                alert("Please select a time!");
             }
         }
 
@@ -231,41 +93,29 @@
         }
 
         setInterval(() => {
-            let day = new Date();
-            
-            // Date Update
-            let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            dateBox.innerHTML = day.toLocaleDateString('en-US', options);
+            let now = new Date();
+            let hh = now.getHours();
+            let mm = now.getMinutes();
+            let ss = now.getSeconds();
 
-            // Analog Logic
-            let hh = day.getHours();
-            let mm = day.getMinutes();
-            let ss = day.getSeconds();
-            
-            hr.style.transform = `rotateZ(${(hh * 30) + (mm / 12)}deg)`;
-            mn.style.transform = `rotateZ(${mm * 6}deg)`;
-            sc.style.transform = `rotateZ(${ss * 6}deg)`; 
+            // Clock Hands Update
+            document.querySelector('#hr').style.transform = `rotateZ(${(hh * 30) + (mm / 12)}deg)`;
+            document.querySelector('#mn').style.transform = `rotateZ(${mm * 6}deg)`;
+            document.querySelector('#sc').style.transform = `rotateZ(${ss * 6}deg)`;
 
-            // Digital Logic
-            let h = hh > 12 ? hh - 12 : hh;
-            if (h == 0) h = 12;
-            let am = hh >= 12 ? "PM" : "AM";
-
-            document.getElementById('hours').innerHTML = h.toString().padStart(2, '0');
+            // Digital Update
+            document.getElementById('hours').innerHTML = hh.toString().padStart(2, '0');
             document.getElementById('minutes').innerHTML = mm.toString().padStart(2, '0');
             document.getElementById('seconds').innerHTML = ss.toString().padStart(2, '0');
-            document.getElementById('ampm').innerHTML = am;
 
-            // Alarm Check logic
-            let currentTime = hh.toString().padStart(2, '0') + ":" + mm.toString().padStart(2, '0');
-            let activeAlarm = localStorage.getItem('userAlarm');
+            // ALARM TRIGGER
+            let currentTimeStr = hh.toString().padStart(2, '0') + ":" + mm.toString().padStart(2, '0');
+            let savedAlarmTime = localStorage.getItem('userAlarm');
 
-            if (activeAlarm === currentTime && ss === 0) {
-                alarmAudio.play().catch(() => {
-                    console.log("Interaction needed to play sound");
-                });
+            if (savedAlarmTime === currentTimeStr && ss === 0) {
+                alarmAudio.play();
                 stopBtn.style.display = "block";
-                alarmStatus.innerHTML = "🚀 ALARM RINGING!";
+                alarmStatus.innerHTML = "🚀 WAKE UP!";
             }
         }, 1000);
     </script>
