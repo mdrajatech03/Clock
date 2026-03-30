@@ -3,25 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Clock Pro - Fixed Version</title>
+    <title>Smart Clock Pro - Elite Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #1a1e23; padding: 20px; }
-        .container { position: relative; background: #2f363e; border-radius: 30px; box-shadow: 25px 25px 75px rgba(0, 0, 0, 0.75); display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 40px 20px; width: 100%; max-width: 450px; }
-        #date-box { color: #fff; font-size: 1.1em; margin-bottom: 20px; opacity: 0.8; }
-        .clock { position: relative; width: 250px; height: 250px; background: #2f363e; border-radius: 50%; box-shadow: inset 5px 5px 10px rgba(0,0,0,0.5), inset -5px -5px 15px rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
-        .clock span { position: absolute; inset: 15px; transform: rotate(calc(30deg * var(--i))); text-align: center; color: #fff; }
-        .clock span b { font-size: 1.2em; opacity: 0.2; display: inline-block; transform: rotate(calc(-30deg * var(--i))); }
-        .circle { position: absolute; width: 90%; height: 90%; display: flex; justify-content: center; align-items: flex-start; }
-        .circle i { position: absolute; width: 4px; height: 50%; background: var(--clr); border-radius: 4px; transform-origin: bottom; transform: scaleY(0.5); }
-        #time { display: flex; margin-bottom: 20px; font-size: 2em; font-weight: 600; }
-        #time div { width: 60px; text-align: center; color: var(--clr); }
-        .controls { display: flex; flex-direction: column; gap: 15px; align-items: center; width: 100%; }
-        input[type="time"] { background: #1a1e23; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 12px; outline: none; }
-        button { padding: 12px 30px; border-radius: 30px; border: none; background: #04fc43; color: #1a1e23; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        #stopBtn { background: #ff2972; color: #fff; display: none; margin-top: 10px; }
-        #alarmStatus { color: #04fc43; font-size: 0.9em; margin-top: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif; /* More professional font */
+        }
+
+        body {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background: #e0e0e0; /* Light background for neumorphism */
+            padding: 20px;
+        }
+
+        .container {
+            position: relative;
+            background: #e0e0e0;
+            border-radius: 40px;
+            /* Neumorphic shadow */
+            box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column; padding: 40px 25px;
+            width: 100%; max-width: 420px;
+        }
+
+        #date-box {
+            color: #555; font-size: 1em; margin-bottom: 25px;
+            font-weight: 400; letter-spacing: 0.5px;
+        }
+
+        .clock {
+            position: relative;
+            width: 250px; height: 250px;
+            background: #e0e0e0; border-radius: 50%;
+            /* Concave Neumorphic Effect */
+            box-shadow: inset 8px 8px 16px #bebebe, inset -8px -8px 16px #ffffff;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 30px; border: 2px solid #e0e0e0;
+        }
+
+        @media (min-width: 450px) { .clock { width: 310px; height: 310px; } }
+
+        /* Center Dot */
+        .clock::before {
+            content: ''; position: absolute;
+            width: 12px; height: 12px;
+            background: #333; border-radius: 50%; z-index: 1000;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* Number markings */
+        .clock span {
+            position: absolute; inset: 18px;
+            transform: rotate(calc(30deg * var(--i)));
+            text-align: center; color: #777;
+        }
+
+        .clock span b {
+            font-size: 1.1em; opacity: 0.5;
+            display: inline-block;
+            transform: rotate(calc(-30deg * var(--i)));
+            font-weight: 500;
+        }
+
+        /* Hands */
+        .circle {
+            position: absolute; width: 92%; height: 92%;
+            display: flex; justify-content: center; align-items: flex-start;
+        }
+
+        .circle i {
+            position: absolute; width: 4px; height: 50%;
+            background: var(--clr); border-radius: 6px;
+            transform-origin: bottom; transform: scaleY(0.5);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .circle::before {
+            content: ''; position: absolute;
+            top: -6px; width: 12px; height: 12px;
+            border-radius: 50%; background: var(--clr);
+            box-shadow: 0 0 10px var(--clr);
+        }
+
+        /* Digital Display */
+        #time {
+            display: flex; margin-bottom: 25px;
+            font-size: 2.2em; font-weight: 600;
+            background: #e0e0e0; padding: 10px 20px; border-radius: 20px;
+            box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+        }
+
+        #time div {
+            width: 65px; text-align: center;
+            /* Removed individual color, added a professional single color */
+            color: #333; 
+        }
+
+        /* Alarm Controls */
+        .controls {
+            display: flex; flex-direction: column;
+            gap: 15px; align-items: center; width: 100%;
+        }
+
+        input[type="time"] {
+            background: #e0e0e0; border: none;
+            color: #333; padding: 12px 20px; border-radius: 15px;
+            font-size: 1.1rem; outline: none; font-weight: 500;
+            box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+        }
+
+        button {
+            padding: 14px 40px; border-radius: 30px; border: none;
+            background: #e0e0e0; color: #333; font-weight: 600;
+            cursor: pointer; transition: 0.3s ease;
+            box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+            font-size: 1rem; letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
+            color: #04fc43; /* Green on hover */
+        }
+
+        button:active {
+            box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+            transform: scale(0.98);
+        }
+
+        /* Stop Button Professional Style */
+        #stopBtn {
+            background: #ff2972; color: #fff; display: none; margin-top: 15px;
+            box-shadow: 6px 6px 12px rgba(255, 41, 114, 0.3);
+        }
+        #stopBtn:hover {
+            background: #ff0055; color: #fff;
+            box-shadow: 3px 3px 6px rgba(255, 41, 114, 0.2);
+        }
+
+        #alarmStatus {
+            color: #666; font-size: 0.9em; margin-top: 10px;
+            font-weight: 400; text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -31,18 +156,22 @@
     </audio>
 
     <div class="container">
-        <div id="date-box">Loading...</div>
+        <div id="date-box">Loading Date...</div>
+
         <div class="clock">
-            <div class="circle" id="sc" style="--clr:#04fc43;"><i></i></div>
-            <div class="circle circle2" id="mn" style="--clr:#fee800;"><i></i></div>
-            <div class="circle circle3" id="hr" style="--clr:#ff2972;"><i></i></div>
-            <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span><span style="--i:3;"><b>3</b></span><span style="--i:4;"><b>4</b></span><span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span><span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span><span style="--i:9;"><b>9</b></span><span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
+            <div class="circle" id="sc" style="--clr:#04fc43;"><i></i></div> <div class="circle circle2" id="mn" style="--clr:#555;"><i></i></div> <div class="circle circle3" id="hr" style="--clr:#333;"><i></i></div> <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span>
+            <span style="--i:3;"><b>3</b></span><span style="--i:4;"><b>4</b></span>
+            <span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span>
+            <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span>
+            <span style="--i:9;"><b>9</b></span><span style="--i:10;"><b>10</b></span>
+            <span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
         </div>
+
         <div id="time">
-            <div id="hours" style="--clr:#ff2972;">00</div>
-            <div id="minutes" style="--clr:#fee800;">00</div>
-            <div id="seconds" style="--clr:#04fc43;">00</div>
-        </div>
+            <div id="hours">00</div>
+            <div id="minutes">00</div>
+            <div id="seconds" style="color:#04fc43;">00</div> </div>
+
         <div class="controls">
             <input type="time" id="alarmTime">
             <button id="setBtn" onclick="setAlarm()">Set Alarm</button>
@@ -52,12 +181,14 @@
     </div>
 
     <script>
+        // JS Code remains exactly the same as the previous fixed version.
+        // Copy the script from the previous response and paste it here.
         const alarmAudio = document.getElementById('alarmAudio');
         const alarmInput = document.getElementById('alarmTime');
         const alarmStatus = document.getElementById('alarmStatus');
         const stopBtn = document.getElementById('stopBtn');
+        const dateBox = document.getElementById('date-box');
 
-        // 1. REFRESH FIX: Page load hote hi purana alarm check karein
         window.onload = () => {
             let savedAlarm = localStorage.getItem('userAlarm');
             if(savedAlarm) {
@@ -71,22 +202,15 @@
             if(timeVal) {
                 localStorage.setItem('userAlarm', timeVal);
                 alarmStatus.innerHTML = "⏰ Alarm set for " + timeVal;
-                
-                // AUDIO FIX: Silent play taaki browser audio allow kar de
-                alarmAudio.play().then(() => {
-                    alarmAudio.pause();
-                    alarmAudio.currentTime = 0;
-                });
-                
-                alert("Alarm Set & Audio Unblocked!");
+                alarmAudio.play().then(() => { alarmAudio.pause(); alarmAudio.currentTime = 0; });
+                alert("Alarm Set Successfully!");
             } else {
                 alert("Please select a time!");
             }
         }
 
         function stopAlarm() {
-            alarmAudio.pause();
-            alarmAudio.currentTime = 0;
+            alarmAudio.pause(); alarmAudio.currentTime = 0;
             stopBtn.style.display = "none";
             localStorage.removeItem('userAlarm');
             alarmStatus.innerHTML = "Alarm Cleared.";
@@ -97,6 +221,10 @@
             let hh = now.getHours();
             let mm = now.getMinutes();
             let ss = now.getSeconds();
+
+            // Date Update
+            let options = { weekday: 'long', month: 'long', day: 'numeric' };
+            dateBox.innerHTML = now.toLocaleDateString('en-US', options);
 
             // Clock Hands Update
             document.querySelector('#hr').style.transform = `rotateZ(${(hh * 30) + (mm / 12)}deg)`;
