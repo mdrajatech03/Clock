@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Smart Clock Pro</title>
+    <title>Ultimate Smart Clock - Pro Version</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
@@ -19,41 +19,30 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(45deg, #1a1e23, #2f363e, #1a1e23);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: #1a1e23;
             padding: 20px;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .container {
             position: relative;
-            background: rgba(47, 54, 62, 0.9);
-            backdrop-filter: blur(10px); /* Glass effect */
+            background: #2f363e;
             border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            box-shadow: 25px 25px 75px rgba(0, 0, 0, 0.75),
+                        inset 5px 5px 20px rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            padding: 30px;
+            padding: 40px 20px;
             width: 100%;
             max-width: 450px;
         }
 
-        /* Date Display */
         #date-box {
             color: #fff;
             font-size: 1.1em;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            font-weight: 300;
+            margin-bottom: 20px;
+            opacity: 0.8;
         }
 
         .clock {
@@ -69,7 +58,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         @media (min-width: 450px) {
@@ -92,7 +81,7 @@
         }
 
         .clock span b {
-            font-size: 1.2em; opacity: 0.3;
+            font-size: 1.2em; opacity: 0.2;
             display: inline-block;
             transform: rotate(calc(-30deg * var(--i)));
         }
@@ -118,22 +107,21 @@
         .circle::before {
             content: '';
             position: absolute;
-            top: -5px; width: 10px; height: 10px;
+            top: -6px; width: 12px; height: 12px;
             border-radius: 50%; background: var(--clr);
             box-shadow: 0 0 20px var(--clr);
         }
 
         #time {
             display: flex;
-            margin-bottom: 15px;
-            font-size: 1.8em;
+            margin-bottom: 20px;
+            font-size: 2em;
             font-weight: 600;
         }
 
         #time div { width: 60px; text-align: center; color: var(--clr); }
-        #time div:last-child { font-size: 0.5em; width: 45px; color: #fff; margin-top: 15px; }
+        #time div:last-child { font-size: 0.5em; width: 45px; color: #fff; margin-top: 18px; }
 
-        /* Controls */
         .controls {
             display: flex;
             flex-direction: column;
@@ -146,29 +134,28 @@
             background: #1a1e23;
             border: 1px solid #444;
             color: #fff;
-            padding: 8px 15px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
             font-size: 1rem;
             outline: none;
         }
 
-        .btn-group { display: flex; gap: 10px; }
-
         button {
-            padding: 10px 20px;
-            border-radius: 25px;
+            padding: 12px 30px;
+            border-radius: 30px;
             border: none;
             background: #04fc43;
-            color: #2f363e;
+            color: #1a1e23;
             font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
         }
 
-        button.stop-btn { background: #ff2972; color: #fff; display: none; }
-        button:hover { filter: brightness(1.1); transform: scale(1.05); }
+        button:hover { transform: scale(1.05); background: #02d137; }
 
-        #alarmStatus { color: #aaa; font-size: 0.85em; text-align: center; }
+        #stopBtn { background: #ff2972; color: #fff; display: none; margin-top: 10px; }
+
+        #alarmStatus { color: #04fc43; font-size: 0.9em; margin-top: 10px; min-height: 1.2em; }
     </style>
 </head>
 <body>
@@ -178,7 +165,7 @@
     </audio>
 
     <div class="container">
-        <div id="date-box">Loading Date...</div>
+        <div id="date-box">Loading...</div>
 
         <div class="clock">
             <div class="circle" id="sc" style="--clr:#04fc43;"><i></i></div>
@@ -202,10 +189,8 @@
 
         <div class="controls">
             <input type="time" id="alarmTime">
-            <div class="btn-group">
-                <button onclick="setAlarm()">Set Alarm</button>
-                <button id="stopBtn" class="stop-btn" onclick="stopAlarm()">Stop Alarm</button>
-            </div>
+            <button id="setBtn" onclick="setAlarm()">Set Alarm</button>
+            <button id="stopBtn" onclick="stopAlarm()">Stop Alarm</button>
             <p id="alarmStatus"></p>
         </div>
     </div>
@@ -216,21 +201,24 @@
         const sc = document.querySelector('#sc');
         const alarmAudio = document.getElementById('alarmAudio');
         const stopBtn = document.getElementById('stopBtn');
+        const alarmStatus = document.getElementById('alarmStatus');
         const dateBox = document.getElementById('date-box');
 
-        // Load saved alarm from storage
+        // Check if there's a saved alarm in localStorage
         let savedAlarm = localStorage.getItem('userAlarm');
         if(savedAlarm) {
             document.getElementById('alarmTime').value = savedAlarm;
-            document.getElementById('alarmStatus').innerHTML = "⏰ Active: " + savedAlarm;
+            alarmStatus.innerHTML = "⏰ Active Alarm: " + savedAlarm;
         }
 
         function setAlarm() {
-            let timeVal = document.getElementById('alarmTime').value;
+            const timeVal = document.getElementById('alarmTime').value;
             if(timeVal) {
                 localStorage.setItem('userAlarm', timeVal);
-                document.getElementById('alarmStatus').innerHTML = "⏰ Alarm set for " + timeVal;
-                alert("Alarm Saved!");
+                alarmStatus.innerHTML = "⏰ Alarm set for " + timeVal;
+                alert("Alarm Set Successfully!");
+            } else {
+                alert("Please select a time first!");
             }
         }
 
@@ -239,26 +227,26 @@
             alarmAudio.currentTime = 0;
             stopBtn.style.display = "none";
             localStorage.removeItem('userAlarm');
-            document.getElementById('alarmStatus').innerHTML = "Alarm Cleared.";
+            alarmStatus.innerHTML = "Alarm Cleared.";
         }
 
         setInterval(() => {
-            let now = new Date();
+            let day = new Date();
             
-            // 1. Update Date
+            // Date Update
             let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            dateBox.innerHTML = now.toLocaleDateString('en-US', options);
+            dateBox.innerHTML = day.toLocaleDateString('en-US', options);
 
-            // 2. Analog Logic
-            let hh = now.getHours();
-            let mm = now.getMinutes();
-            let ss = now.getSeconds();
+            // Analog Logic
+            let hh = day.getHours();
+            let mm = day.getMinutes();
+            let ss = day.getSeconds();
             
             hr.style.transform = `rotateZ(${(hh * 30) + (mm / 12)}deg)`;
             mn.style.transform = `rotateZ(${mm * 6}deg)`;
             sc.style.transform = `rotateZ(${ss * 6}deg)`; 
 
-            // 3. Digital Logic
+            // Digital Logic
             let h = hh > 12 ? hh - 12 : hh;
             if (h == 0) h = 12;
             let am = hh >= 12 ? "PM" : "AM";
@@ -268,13 +256,16 @@
             document.getElementById('seconds').innerHTML = ss.toString().padStart(2, '0');
             document.getElementById('ampm').innerHTML = am;
 
-            // 4. Alarm Logic
-            let checkTime = hh.toString().padStart(2, '0') + ":" + mm.toString().padStart(2, '0');
+            // Alarm Check logic
+            let currentTime = hh.toString().padStart(2, '0') + ":" + mm.toString().padStart(2, '0');
             let activeAlarm = localStorage.getItem('userAlarm');
 
-            if (activeAlarm === checkTime && ss === 0) {
-                alarmAudio.play();
+            if (activeAlarm === currentTime && ss === 0) {
+                alarmAudio.play().catch(() => {
+                    console.log("Interaction needed to play sound");
+                });
                 stopBtn.style.display = "block";
+                alarmStatus.innerHTML = "🚀 ALARM RINGING!";
             }
         }, 1000);
     </script>
