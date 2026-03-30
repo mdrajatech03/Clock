@@ -195,22 +195,41 @@
             });
         }
 
-        // --- ALARM ---
-        function setAlarm() {
-            const val = document.getElementById('alarmTime').value;
-            if(val) {
-                activeAlarm = val;
-                localStorage.setItem('userAlarm', val);
-                audio.play().then(() => { audio.pause(); audio.currentTime = 0; });
-                alert("Alarm Set!");
-            }
-        }
+        // --- ALARM LOGIC (Line 198 approx) ---
+function setAlarm() {
+    const val = document.getElementById('alarmTime').value;
+    if(val) {
+        activeAlarm = val;
+        localStorage.setItem('userAlarm', val);
+        document.getElementById('alarmStatus').innerText = "⏰ Alarm Set: " + val;
+        
+        // Browser ko "Jagane" ke liye sound test
+        audio.muted = true; // Pehle mute karke play karein
+        audio.play().then(() => {
+            audio.pause();
+            audio.muted = false; // Phir unmute kar dein
+        });
+        
+        alert("Alarm Set! Make sure your volume is up.");
+    }
+}
 
-        function stopAlarm() {
-            audio.pause(); activeAlarm = null;
-            localStorage.removeItem('userAlarm');
-            document.getElementById('stopBtn').style.display = "none";
-        }
+// --- MAIN LOOP mein Alarm Check ---
+if (activeAlarm === (hh + ":" + mm) && ss === 0) {
+    audio.currentTime = 0; // Shuru se bajao
+    let playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+            document.getElementById('stopBtn').style.display = "inline-block";
+        }).catch(error => {
+            // Agar browser block kare toh user ko batao
+            document.getElementById('alarmStatus').innerText = "🔊 TAP SCREEN TO ENABLE SOUND!";
+            window.addEventListener('click', () => { audio.play(); }, {once: true});
+        });
+    }
+}
+        
 
         // --- MAIN LOOP ---
         let qCount = 0;
