@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Smart Clock - Multi-Theme</title>
+    <title>Elite Clock - Theme Fixed</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
         :root {
             --bg-color: #e0e0e0;
@@ -15,7 +15,6 @@
             --accent-color: #04fc43;
         }
 
-        /* Dark Theme Variables */
         [data-theme="dark"] {
             --bg-color: #1a1e23;
             --text-color: #ddd;
@@ -23,55 +22,46 @@
             --shadow-dark: #0f1216;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; transition: 0.4s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; transition: background 0.3s, color 0.3s; }
 
         body {
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; background: var(--bg-color); padding: 20px;
         }
 
-        /* Theme Toggle Button */
+        /* --- Theme Button Fix --- */
         .theme-switch {
-            position: absolute; top: 20px; right: 20px;
-            padding: 10px 15px; border-radius: 20px; border: none;
+            position: fixed; top: 20px; right: 20px;
+            padding: 12px 20px; border-radius: 30px; border: none;
             background: var(--bg-color); color: var(--text-color);
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-            cursor: pointer; font-weight: 600; font-size: 0.8em;
+            cursor: pointer; font-weight: 600; z-index: 2000;
         }
 
         .container {
-            position: relative; background: var(--bg-color); border-radius: 40px;
+            background: var(--bg-color); border-radius: 40px;
             box-shadow: 20px 20px 60px var(--shadow-dark), -20px -20px 60px var(--shadow-light);
-            display: flex; justify-content: center; align-items: center;
-            flex-direction: column; padding: 40px 25px; width: 100%; max-width: 400px;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 40px 25px; width: 100%; max-width: 380px;
         }
 
-        #date-box { color: var(--text-color); font-size: 1.1em; margin-bottom: 25px; font-weight: 500; }
+        #date-box { color: var(--text-color); font-size: 1em; margin-bottom: 20px; font-weight: 500; }
 
-        /* Clock Fix - No White Border Ring */
+        /* --- Clock Fix --- */
         .clock {
-            position: relative; width: 260px; height: 260px;
+            position: relative; width: 250px; height: 250px;
             background: var(--bg-color); border-radius: 50%; border: none;
             box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light),
                         inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
             display: flex; justify-content: center; align-items: center; margin-bottom: 30px;
         }
 
-        @media (min-width: 450px) { .clock { width: 300px; height: 300px; } }
-
-        .clock::before {
-            content: ''; position: absolute; width: 12px; height: 12px;
-            background: var(--text-color); border-radius: 50%; z-index: 1000;
-        }
-
         .clock span {
-            position: absolute; inset: 20px; text-align: center; color: var(--text-color);
-            transform: rotate(calc(30deg * var(--i))); opacity: 0.6;
+            position: absolute; inset: 15px; text-align: center; color: var(--text-color);
+            transform: rotate(calc(30deg * var(--i))); opacity: 0.5;
         }
-
         .clock span b { display: inline-block; transform: rotate(calc(-30deg * var(--i))); }
 
-        /* Hands Alignment */
         .circle { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; }
         .circle i { position: absolute; border-radius: 6px; transform-origin: bottom; background: var(--clr); }
         
@@ -79,43 +69,48 @@
         #mn i { height: 35%; width: 4px; top: 15%; }
         #sc i { height: 40%; width: 2px; top: 10%; }
 
+        /* --- Digital Display Fix (Spacing & Colon) --- */
         #time {
-            display: flex; margin-bottom: 25px; font-size: 2.2em; font-weight: 600;
-            background: var(--bg-color); padding: 12px 25px; border-radius: 20px;
-            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
-            color: var(--text-color);
+            display: flex; align-items: center; gap: 10px; margin-bottom: 25px; 
+            font-size: 2em; font-weight: 600; color: var(--text-color);
+            background: var(--bg-color); padding: 10px 20px; border-radius: 15px;
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
         }
+        .colon { opacity: 0.5; font-size: 0.8em; padding-bottom: 4px; }
 
         .controls { display: flex; flex-direction: column; gap: 15px; align-items: center; width: 100%; }
 
         input[type="time"] {
             background: var(--bg-color); border: none; color: var(--text-color);
-            padding: 12px 20px; border-radius: 15px; outline: none;
+            padding: 12px; border-radius: 12px; outline: none;
             box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
         }
 
-        button {
-            padding: 12px 25px; border-radius: 30px; border: none;
+        .btn-row { display: flex; gap: 10px; }
+
+        button.action-btn {
+            padding: 10px 20px; border-radius: 25px; border: none;
             background: var(--bg-color); color: var(--text-color); font-weight: 600;
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
             cursor: pointer;
         }
 
-        button:active { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
-        #stopBtn { background: #ff2972; color: #fff; display: none; }
-        #alarmStatus { color: var(--accent-color); font-size: 0.9em; margin-top: 10px; height: 1.2em; }
+        button.action-btn:active { box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light); }
+        #stopBtn { color: #ff2972; display: none; }
+        #alarmStatus { color: var(--accent-color); font-size: 0.8em; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <button class="theme-switch" onclick="toggleTheme()">🌓 Theme</button>
+    <button class="theme-switch" onclick="toggleTheme()">🌓 Change Theme</button>
 
-    <audio id="alarmAudio" preload="auto" loop>
+    <audio id="alarmAudio" loop>
         <source src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
         <div id="date-box">Loading...</div>
+        
         <div class="clock">
             <div class="circle" id="hr" style="--clr:var(--text-color);"><i></i></div>
             <div class="circle" id="mn" style="--clr:#888;"><i></i></div>
@@ -125,14 +120,20 @@
             <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span><span style="--i:9;"><b>9</b></span>
             <span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
         </div>
+
         <div id="time">
-            <div id="hours">00</div><div id="minutes">00</div><div id="seconds" style="color:var(--accent-color);">00</div>
+            <div id="hours">00</div>
+            <span class="colon">:</span>
+            <div id="minutes">00</div>
+            <span class="colon">:</span>
+            <div id="seconds" style="color:var(--accent-color);">00</div>
         </div>
+
         <div class="controls">
             <input type="time" id="alarmTime">
-            <div style="display: flex; gap: 10px;">
-                <button onclick="setAlarm()">Set Alarm</button>
-                <button id="stopBtn" onclick="stopAlarm()">Stop</button>
+            <div class="btn-row">
+                <button class="action-btn" onclick="setAlarm()">Set Alarm</button>
+                <button id="stopBtn" class="action-btn" onclick="stopAlarm()">Stop</button>
             </div>
             <p id="alarmStatus"></p>
         </div>
@@ -142,15 +143,13 @@
         const alarmAudio = document.getElementById('alarmAudio');
         let activeAlarm = localStorage.getItem('userAlarm');
 
-        // Theme Toggle Logic
         function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            const target = current === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', target);
-            localStorage.setItem('theme', target);
+            const body = document.body;
+            const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
         }
 
-        // Load saved theme
         if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
 
         window.onload = () => {
@@ -179,10 +178,11 @@
         }
 
         setInterval(() => {
-            let day = new Date();
-            let hh = day.getHours(), mm = day.getMinutes(), ss = day.getSeconds();
+            let now = new Date();
+            let hh = now.getHours(), mm = now.getMinutes(), ss = now.getSeconds();
             
-            document.getElementById('date-box').innerHTML = day.toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
+            document.getElementById('date-box').innerHTML = now.toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
+            
             document.getElementById('hr').style.transform = `rotateZ(${(hh*30)+(mm/12)}deg)`;
             document.getElementById('mn').style.transform = `rotateZ(${mm*6}deg)`;
             document.getElementById('sc').style.transform = `rotateZ(${ss*6}deg)`;
