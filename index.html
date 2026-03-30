@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Clock - Theme Fixed</title>
+    <title>Ultimate Smart Clock - Weather Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
@@ -22,94 +22,102 @@
             --shadow-dark: #0f1216;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; transition: background 0.3s, color 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; transition: 0.3s; }
 
         body {
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; background: var(--bg-color); padding: 20px;
         }
 
-        /* --- Theme Button Fix --- */
-        .theme-switch {
-            position: fixed; top: 20px; right: 20px;
-            padding: 12px 20px; border-radius: 30px; border: none;
-            background: var(--bg-color); color: var(--text-color);
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-            cursor: pointer; font-weight: 600; z-index: 2000;
+        /* Top Bar Features */
+        .top-bar {
+            position: fixed; top: 15px; width: 90%; max-width: 400px;
+            display: flex; justify-content: space-between; align-items: center; z-index: 100;
         }
 
+        .info-pill {
+            padding: 6px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 600;
+            background: var(--bg-color); color: var(--text-color);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .theme-switch {
+            padding: 8px 15px; border-radius: 20px; border: none; cursor: pointer;
+            background: var(--bg-color); color: var(--text-color); font-weight: 600;
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+        }
+
+        /* Main Container */
         .container {
             background: var(--bg-color); border-radius: 40px;
             box-shadow: 20px 20px 60px var(--shadow-dark), -20px -20px 60px var(--shadow-light);
             display: flex; flex-direction: column; align-items: center;
-            padding: 40px 25px; width: 100%; max-width: 380px;
+            padding: 30px 20px; width: 100%; max-width: 380px; margin-top: 40px;
         }
 
-        #date-box { color: var(--text-color); font-size: 1em; margin-bottom: 20px; font-weight: 500; }
+        #weather-box { font-size: 0.85em; color: var(--accent-color); font-weight: 600; margin-bottom: 10px; }
+        #quote-box { font-size: 0.75em; color: var(--text-color); font-style: italic; text-align: center; margin-bottom: 20px; height: 35px; opacity: 0.8; }
 
-        /* --- Clock Fix --- */
+        /* Analog Clock Fix (No Ring) */
         .clock {
-            position: relative; width: 250px; height: 250px;
+            position: relative; width: 220px; height: 220px;
             background: var(--bg-color); border-radius: 50%; border: none;
             box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light),
                         inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
-            display: flex; justify-content: center; align-items: center; margin-bottom: 30px;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
         }
 
-        .clock span {
-            position: absolute; inset: 15px; text-align: center; color: var(--text-color);
-            transform: rotate(calc(30deg * var(--i))); opacity: 0.5;
-        }
+        .clock span { position: absolute; inset: 12px; text-align: center; color: var(--text-color); transform: rotate(calc(30deg * var(--i))); opacity: 0.4; }
         .clock span b { display: inline-block; transform: rotate(calc(-30deg * var(--i))); }
 
         .circle { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; }
         .circle i { position: absolute; border-radius: 6px; transform-origin: bottom; background: var(--clr); }
-        
-        #hr i { height: 25%; width: 6px; top: 25%; }
-        #mn i { height: 35%; width: 4px; top: 15%; }
-        #sc i { height: 40%; width: 2px; top: 10%; }
+        #hr i { height: 22%; width: 6px; top: 28%; }
+        #mn i { height: 32%; width: 4px; top: 18%; }
+        #sc i { height: 38%; width: 2px; top: 12%; }
 
-        /* --- Digital Display Fix (Spacing & Colon) --- */
-        #time {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 25px; 
-            font-size: 2em; font-weight: 600; color: var(--text-color);
+        /* Digital Display */
+        #time-display {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 20px; 
+            font-size: 1.8em; font-weight: 600; color: var(--text-color);
             background: var(--bg-color); padding: 10px 20px; border-radius: 15px;
             box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
         }
-        .colon { opacity: 0.5; font-size: 0.8em; padding-bottom: 4px; }
 
-        .controls { display: flex; flex-direction: column; gap: 15px; align-items: center; width: 100%; }
-
-        input[type="time"] {
-            background: var(--bg-color); border: none; color: var(--text-color);
-            padding: 12px; border-radius: 12px; outline: none;
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        /* Controls */
+        .controls { width: 100%; display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        input[type="time"], input[type="color"] {
+            background: var(--bg-color); border: none; padding: 10px; border-radius: 10px;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            color: var(--text-color); outline: none;
         }
 
-        .btn-row { display: flex; gap: 10px; }
-
-        button.action-btn {
-            padding: 10px 20px; border-radius: 25px; border: none;
+        button {
+            padding: 10px 18px; border-radius: 20px; border: none; cursor: pointer;
             background: var(--bg-color); color: var(--text-color); font-weight: 600;
             box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-            cursor: pointer;
         }
 
-        button.action-btn:active { box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light); }
         #stopBtn { color: #ff2972; display: none; }
-        #alarmStatus { color: var(--accent-color); font-size: 0.8em; margin-top: 10px; }
+        #alarmStatus { color: var(--accent-color); font-size: 0.8em; height: 15px; }
     </style>
 </head>
 <body>
 
-    <button class="theme-switch" onclick="toggleTheme()">🌓 Change Theme</button>
+    <div class="top-bar">
+        <div class="info-pill" id="battery">🔋 --%</div>
+        <div class="info-pill" id="temp-display">🌡️ --°C</div>
+        <button class="theme-switch" onclick="toggleTheme()">🌓 Theme</button>
+    </div>
 
     <audio id="alarmAudio" loop>
-        <source src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
+        <source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
-        <div id="date-box">Loading...</div>
+        <div id="weather-box">Checking Weather...</div>
+        <div id="quote-box">"Your time is limited, don't waste it."</div>
         
         <div class="clock">
             <div class="circle" id="hr" style="--clr:var(--text-color);"><i></i></div>
@@ -121,79 +129,113 @@
             <span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
         </div>
 
-        <div id="time">
-            <div id="hours">00</div>
-            <span class="colon">:</span>
-            <div id="minutes">00</div>
-            <span class="colon">:</span>
-            <div id="seconds" style="color:var(--accent-color);">00</div>
+        <div id="time-display">
+            <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds" style="color:var(--accent-color);">00</span>
         </div>
 
         <div class="controls">
             <input type="time" id="alarmTime">
-            <div class="btn-row">
-                <button class="action-btn" onclick="setAlarm()">Set Alarm</button>
-                <button id="stopBtn" class="action-btn" onclick="stopAlarm()">Stop</button>
+            <div style="display: flex; gap:10px;">
+                <button onclick="setAlarm()">Set Alarm</button>
+                <button id="stopBtn" onclick="stopAlarm()">Stop</button>
             </div>
             <p id="alarmStatus"></p>
+            <div style="display:flex; align-items:center; gap:10px; font-size:0.8em; color:var(--text-color);">
+                <span>Color:</span>
+                <input type="color" id="colorPicker" value="#04fc43" onchange="changeAccent(this.value)">
+            </div>
         </div>
     </div>
 
     <script>
-        const alarmAudio = document.getElementById('alarmAudio');
+        const audio = document.getElementById('alarmAudio');
         let activeAlarm = localStorage.getItem('userAlarm');
+        const quotes = ["Believe in yourself!", "Time is gold.", "Success is a journey.", "Focus on the good."];
 
+        // --- WEATHER LOGIC ---
+        // Aapko OpenWeatherMap se apni API Key leni hogi (Free hai)
+        const API_KEY = "YOUR_API_KEY_HERE"; 
+        
+        function getWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`)
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById('weather-box').innerText = `${data.name}: ${data.weather[0].main}`;
+                            document.getElementById('temp-display').innerText = `🌡️ ${Math.round(data.main.temp)}°C`;
+                        })
+                        .catch(() => document.getElementById('weather-box').innerText = "Weather Unavailable");
+                });
+            }
+        }
+        getWeather();
+
+        // --- THEME & ACCENT ---
         function toggleTheme() {
             const body = document.body;
-            const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            const target = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
         }
-
         if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
 
-        window.onload = () => {
-            if(activeAlarm) {
-                document.getElementById('alarmTime').value = activeAlarm;
-                document.getElementById('alarmStatus').innerHTML = "⏰ Active: " + activeAlarm;
-            }
-        };
+        function changeAccent(color) {
+            document.documentElement.style.setProperty('--accent-color', color);
+            localStorage.setItem('accentColor', color);
+        }
 
+        // --- BATTERY ---
+        if(navigator.getBattery) {
+            navigator.getBattery().then(bat => {
+                const update = () => document.getElementById('battery').innerText = `🔋 ${Math.round(bat.level * 100)}%`;
+                update(); bat.onlevelchange = update;
+            });
+        }
+
+        // --- ALARM ---
         function setAlarm() {
             const val = document.getElementById('alarmTime').value;
             if(val) {
                 activeAlarm = val;
                 localStorage.setItem('userAlarm', val);
-                alarmAudio.play().then(() => { alarmAudio.pause(); alarmAudio.currentTime = 0; });
+                audio.play().then(() => { audio.pause(); audio.currentTime = 0; });
                 alert("Alarm Set!");
             }
         }
 
         function stopAlarm() {
-            alarmAudio.pause();
-            document.getElementById('stopBtn').style.display = "none";
+            audio.pause(); activeAlarm = null;
             localStorage.removeItem('userAlarm');
-            activeAlarm = null;
-            document.getElementById('alarmStatus').innerHTML = "";
+            document.getElementById('stopBtn').style.display = "none";
         }
 
+        // --- MAIN LOOP ---
+        let qCount = 0;
         setInterval(() => {
             let now = new Date();
-            let hh = now.getHours(), mm = now.getMinutes(), ss = now.getSeconds();
-            
-            document.getElementById('date-box').innerHTML = now.toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
-            
-            document.getElementById('hr').style.transform = `rotateZ(${(hh*30)+(mm/12)}deg)`;
-            document.getElementById('mn').style.transform = `rotateZ(${mm*6}deg)`;
+            let hh = now.getHours().toString().padStart(2,'0');
+            let mm = now.getMinutes().toString().padStart(2,'0');
+            let ss = now.getSeconds();
+
+            document.getElementById('hr').style.transform = `rotateZ(${(now.getHours()*30)+(now.getMinutes()/12)}deg)`;
+            document.getElementById('mn').style.transform = `rotateZ(${now.getMinutes()*6}deg)`;
             document.getElementById('sc').style.transform = `rotateZ(${ss*6}deg)`;
 
-            document.getElementById('hours').innerHTML = hh.toString().padStart(2,'0');
-            document.getElementById('minutes').innerHTML = mm.toString().padStart(2,'0');
-            document.getElementById('seconds').innerHTML = ss.toString().padStart(2,'0');
+            document.getElementById('hours').innerText = hh;
+            document.getElementById('minutes').innerText = mm;
+            document.getElementById('seconds').innerText = ss.toString().padStart(2,'0');
 
-            if (activeAlarm === (hh.toString().padStart(2,'0') + ":" + mm.toString().padStart(2,'0')) && ss === 0) {
-                alarmAudio.play();
-                document.getElementById('stopBtn').style.display = "block";
+            if (activeAlarm === (hh + ":" + mm) && ss === 0) {
+                audio.play();
+                document.getElementById('stopBtn').style.display = "inline-block";
+            }
+
+            if(ss % 15 === 0) {
+                document.getElementById('quote-box').innerText = `"${quotes[qCount % quotes.length]}"`;
+                qCount++;
             }
         }, 1000);
     </script>
