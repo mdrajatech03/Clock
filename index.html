@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Smart Clock - Sound Master</title>
+    <title>Elite Smart Clock Pro Max</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
@@ -26,218 +26,258 @@
 
         body {
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; background: var(--bg-color); padding: 20px;
+            min-height: 100vh; background: var(--bg-color); padding: 20px; overflow: hidden;
         }
 
         .top-bar {
             position: fixed; top: 15px; width: 90%; max-width: 400px;
-            display: flex; justify-content: space-between; align-items: center; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center; z-index: 100; gap: 5px;
         }
 
         .info-pill {
-            padding: 8px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 600;
+            padding: 8px 12px; border-radius: 20px; font-size: 0.7em; font-weight: 600;
             background: var(--bg-color); color: var(--text-color);
             box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            border: none; cursor: pointer;
         }
+
+        #accentPicker { border: none; width: 25px; height: 25px; cursor: pointer; background: none; }
 
         .container {
             background: var(--bg-color); border-radius: 40px;
             box-shadow: 20px 20px 60px var(--shadow-dark), -20px -20px 60px var(--shadow-light);
             display: flex; flex-direction: column; align-items: center;
-            padding: 30px 20px; width: 100%; max-width: 380px; margin-top: 40px;
+            padding: 25px; width: 100%; max-width: 380px; margin-top: 40px;
         }
 
-        #weather-status { font-size: 0.8em; color: var(--accent-color); font-weight: 600; margin-bottom: 5px; }
+        .tab-buttons { display: flex; gap: 15px; margin-bottom: 20px; }
+        .tab-btn { font-size: 0.8em; padding: 8px 15px; }
+        .tab-btn.active { color: var(--accent-color); box-shadow: inset 2px 2px 5px var(--shadow-dark); }
+
+        .clock-section, .stopwatch-section { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .stopwatch-section { display: none; }
 
         .clock {
-            position: relative; width: 220px; height: 220px;
+            position: relative; width: 200px; height: 200px;
             background: var(--bg-color); border-radius: 50%;
             box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light),
                         inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
-            display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 20px;
         }
 
-        .clock span { position: absolute; inset: 15px; text-align: center; color: var(--text-color); transform: rotate(calc(30deg * var(--i))); opacity: 0.4; }
+        .clock span { position: absolute; inset: 12px; text-align: center; color: var(--text-color); transform: rotate(calc(30deg * var(--i))); opacity: 0.4; font-size: 0.8em; }
         .clock span b { display: inline-block; transform: rotate(calc(-30deg * var(--i))); }
 
         .circle { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; }
         .circle i { position: absolute; border-radius: 6px; transform-origin: bottom; background: var(--clr); }
         #hr i { height: 25%; width: 6px; top: 25%; }
         #mn i { height: 35%; width: 4px; top: 15%; }
-        #sc i { height: 40%; width: 2px; top: 10%; }
+        #sc i { height: 40%; width: 2px; top: 10%; background: var(--accent-color); }
 
-        #time-display {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 25px; 
-            font-size: 1.8em; font-weight: 600; color: var(--text-color);
-            background: var(--bg-color); padding: 12px 20px; border-radius: 20px;
-            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+        .display-box {
+            font-size: 1.6em; font-weight: 600; color: var(--text-color);
+            background: var(--bg-color); padding: 10px 25px; border-radius: 20px; margin-bottom: 20px;
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
         }
 
-        .controls { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .controls { width: 100%; display: flex; flex-direction: column; gap: 10px; align-items: center; }
         
         select, input[type="time"] {
-            width: 85%; background: var(--bg-color); border: none; padding: 12px; border-radius: 12px;
+            width: 90%; background: var(--bg-color); border: none; padding: 10px; border-radius: 12px;
             box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
             color: var(--text-color); outline: none; text-align: center;
         }
 
         button {
-            padding: 12px 25px; border-radius: 25px; border: none; cursor: pointer;
-            background: var(--bg-color); color: var(--text-color); font-weight: 600;
+            padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer;
+            background: var(--bg-color); color: var(--text-color); font-weight: 600; font-size: 0.85em;
             box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
         }
 
-        #stopBtn { color: #ff2972; display: none; }
-        #alarmStatus { color: var(--accent-color); font-size: 0.85em; font-weight: 600; height: 18px; text-align: center; }
+        button:active { box-shadow: inset 2px 2px 5px var(--shadow-dark); }
+
+        .alarm-actions { display: none; gap: 10px; margin-top: 10px; }
+        #stopBtn { color: #ff2972; }
+        #snoozeBtn { color: #ffa500; }
+        #alarmStatus { color: var(--accent-color); font-size: 0.8em; font-weight: 600; margin-top: 5px; min-height: 1.2em; }
     </style>
 </head>
 <body onclick="unlockAudio()">
 
     <div class="top-bar">
         <div class="info-pill" id="battery">🔋 --%</div>
+        <div class="info-pill">🎨 <input type="color" id="accentPicker" oninput="changeAccent(this.value)"></div>
         <div class="info-pill" id="temp-display">🌡️ --°C</div>
-        <button class="info-pill" onclick="toggleTheme()">🌓 Theme</button>
+        <button class="info-pill" onclick="toggleTheme()">🌓</button>
     </div>
 
     <audio id="alarmAudio" loop preload="auto">
-        <source id="audioSource" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
-        <div id="weather-status">Weather: Loading...</div>
-        <div id="quote-box" style="font-size: 0.7em; margin-bottom: 15px; opacity: 0.7;">"Time is precious."</div>
-        
-        <div class="clock">
-            <div class="circle" id="hr" style="--clr:var(--text-color);"><i></i></div>
-            <div class="circle" id="mn" style="--clr:#888;"><i></i></div>
-            <div class="circle" id="sc" style="--clr:var(--accent-color);"><i></i></div>
-            <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span><span style="--i:3;"><b>3</b></span>
-            <span style="--i:4;"><b>4</b></span><span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span>
-            <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span><span style="--i:9;"><b>9</b></span>
-            <span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
+        <div class="tab-buttons">
+            <button class="tab-btn active" id="clockTab" onclick="showSection('clock')">Clock</button>
+            <button class="tab-btn" id="stopwatchTab" onclick="showSection('stopwatch')">Stopwatch</button>
         </div>
 
-        <div id="time-display">
-            <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds" style="color:var(--accent-color);">00</span>
-        </div>
-
-        <div class="controls">
-            <select id="soundSelect" onchange="changeSound()">
-                <option value="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3">Classic Bell</option>
-                <option value="https://www.soundjay.com/buttons/beep-01a.mp3">Digital Beep</option>
-                <option value="https://www.soundjay.com/clock/alarm-clock-01.mp3">Retro Alarm</option>
-            </select>
-
-            <input type="time" id="alarmTime">
+        <div class="clock-section" id="clock-sec">
+            <div id="weather-status" style="font-size:0.7em; color:var(--accent-color); margin-bottom:10px;">Weather: Loading...</div>
             
-            <div style="display:flex; gap:10px;">
-                <button onclick="setAlarm()">Set Alarm</button>
-                <button id="stopBtn" onclick="stopAlarm()">Stop</button>
+            <div class="clock">
+                <div class="circle" id="hr" style="--clr:var(--text-color);"><i></i></div>
+                <div class="circle" id="mn" style="--clr:#888;"><i></i></div>
+                <div class="circle" id="sc"><i></i></div>
+                <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span><span style="--i:3;"><b>3</b></span>
+                <span style="--i:4;"><b>4</b></span><span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span>
+                <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span><span style="--i:9;"><b>9</b></span>
+                <span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
             </div>
-            
-            <p id="alarmStatus"></p>
+
+            <div class="display-box" id="time-display">00:00:00</div>
+
+            <div class="controls">
+                <select id="soundSelect" onchange="changeSound()">
+                    <option value="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3">Classic Bell</option>
+                    <option value="https://www.soundjay.com/buttons/beep-01a.mp3">Digital Beep</option>
+                </select>
+                <input type="time" id="alarmTime">
+                <button onclick="setAlarm()">Set Alarm</button>
+                
+                <div class="alarm-actions" id="alarmActions">
+                    <button id="snoozeBtn" onclick="snoozeAlarm()">Snooze (5m)</button>
+                    <button id="stopBtn" onclick="stopAlarm()">Stop</button>
+                </div>
+                <p id="alarmStatus"></p>
+            </div>
+        </div>
+
+        <div class="stopwatch-section" id="stopwatch-sec">
+            <h3 style="margin-bottom: 20px; color: var(--text-color); font-size: 0.9em;">STOPWATCH</h3>
+            <div class="display-box" id="sw-display">00:00.00</div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="startSW()">Start</button>
+                <button onclick="pauseSW()">Pause</button>
+                <button onclick="resetSW()">Reset</button>
+            </div>
         </div>
     </div>
 
     <script>
         const audio = document.getElementById('alarmAudio');
-        const soundSelect = document.getElementById('soundSelect');
-        const alarmInput = document.getElementById('alarmTime');
-        const alarmStatus = document.getElementById('alarmStatus');
-        let activeAlarm = localStorage.getItem('userAlarm') || null;
-
-        // Force Unlock on any click
-        function unlockAudio() {
-            audio.play().then(() => {
-                audio.pause();
-                console.log("Audio Unlocked");
-            }).catch(() => {});
-        }
-
-        window.onload = () => {
-            if(activeAlarm) {
-                alarmInput.value = activeAlarm;
-                alarmStatus.innerText = "⏰ Active: " + activeAlarm;
-            }
-            fetchWeather();
-        };
-
-        function changeSound() {
-            audio.src = soundSelect.value;
-            audio.load();
-            // Preview sound
-            audio.play().then(() => {
-                setTimeout(() => { if(!ringing) audio.pause(); }, 1500);
-            }).catch(() => {});
-        }
-
-        function setAlarm() {
-            if(alarmInput.value) {
-                activeAlarm = alarmInput.value;
-                localStorage.setItem('userAlarm', activeAlarm);
-                alarmStatus.innerText = "⏰ Set for " + activeAlarm;
-                unlockAudio(); // Important
-                alert("Alarm Set! Sound will play at " + activeAlarm);
-            }
-        }
-
+        let activeAlarm = null;
         let ringing = false;
-        function stopAlarm() {
-            audio.pause();
-            audio.currentTime = 0;
-            ringing = false;
-            activeAlarm = null;
-            localStorage.removeItem('userAlarm');
-            document.getElementById('stopBtn').style.display = "none";
-            alarmStatus.innerText = "Alarm Stopped.";
+        
+        // --- Color & Theme ---
+        function changeAccent(color) {
+            document.documentElement.style.setProperty('--accent-color', color);
+            localStorage.setItem('accentColor', color);
         }
-
-        // Main Clock Logic
-        setInterval(() => {
-            const d = new Date();
-            const h = d.getHours().toString().padStart(2, '0');
-            const m = d.getMinutes().toString().padStart(2, '0');
-            const s = d.getSeconds();
-
-            document.getElementById('hr').style.transform = `rotate(${(d.getHours()*30)+(d.getMinutes()/12)}deg)`;
-            document.getElementById('mn').style.transform = `rotate(${d.getMinutes()*6}deg)`;
-            document.getElementById('sc').style.transform = `rotate(${s*6}deg)`;
-
-            document.getElementById('hours').innerText = h;
-            document.getElementById('minutes').innerText = m;
-            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
-
-            // Trigger Alarm
-            if (activeAlarm === (h + ":" + m) && s === 0 && !ringing) {
-                ringing = true;
-                audio.play().catch(() => {
-                    alarmStatus.innerText = "🚨 TAP SCREEN NOW!";
-                });
-                document.getElementById('stopBtn').style.display = "inline-block";
-            }
-        }, 1000);
-
-        // Weather & Theme (Shortened)
         function toggleTheme() {
             const b = document.body;
             b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
         }
 
-        function fetchWeather() {
-            const key = "ca20508697617b874b4c2487d2b91370";
-            navigator.geolocation.getCurrentPosition(p => {
-                fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${p.coords.latitude}&lon=${p.coords.longitude}&appid=${key}&units=metric`)
-                .then(r => r.json()).then(data => {
-                    document.getElementById('weather-status').innerText = data.name + ": " + Math.round(data.main.temp) + "°C";
-                });
-            });
+        // --- Audio Unlock ---
+        function unlockAudio() {
+            if (audio.paused && !ringing) {
+                audio.play().then(() => { audio.pause(); audio.currentTime = 0; });
+            }
         }
-        
-        // Battery
-        if(navigator.getBattery) navigator.getBattery().then(b => {
+
+        // --- Navigation ---
+        function showSection(sec) {
+            document.getElementById('clock-sec').style.display = sec === 'clock' ? 'flex' : 'none';
+            document.getElementById('stopwatch-sec').style.display = sec === 'stopwatch' ? 'flex' : 'none';
+            document.getElementById('clockTab').classList.toggle('active', sec === 'clock');
+            document.getElementById('stopwatchTab').classList.toggle('active', sec === 'stopwatch');
+        }
+
+        // --- Alarm Logic ---
+        function setAlarm() {
+            if(document.getElementById('alarmTime').value) {
+                activeAlarm = document.getElementById('alarmTime').value;
+                document.getElementById('alarmStatus').innerText = "⏰ Set: " + activeAlarm;
+            }
+        }
+
+        function stopAlarm() {
+            audio.pause(); audio.currentTime = 0;
+            ringing = false; activeAlarm = null;
+            document.getElementById('alarmActions').style.display = "none";
+            document.getElementById('alarmStatus').innerText = "Alarm stopped.";
+        }
+
+        function snoozeAlarm() {
+            audio.pause(); audio.currentTime = 0;
+            ringing = false;
+            let now = new Date();
+            now.setMinutes(now.getMinutes() + 5);
+            activeAlarm = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('alarmActions').style.display = "none";
+            document.getElementById('alarmStatus').innerText = "💤 Snoozed until " + activeAlarm;
+        }
+
+        function changeSound() {
+            audio.src = document.getElementById('soundSelect').value;
+            audio.load();
+        }
+
+        // --- Clock Interval ---
+        setInterval(() => {
+            const d = new Date();
+            const h = d.getHours().toString().padStart(2, '0');
+            const m = d.getMinutes().toString().padStart(2, '0');
+            const s = d.getSeconds().toString().padStart(2, '0');
+
+            document.getElementById('time-display').innerText = `${h}:${m}:${s}`;
+            document.getElementById('hr').style.transform = `rotate(${(d.getHours()*30)+(d.getMinutes()/12)}deg)`;
+            document.getElementById('mn').style.transform = `rotate(${d.getMinutes()*6}deg)`;
+            document.getElementById('sc').style.transform = `rotate(${d.getSeconds()*6}deg)`;
+
+            if (activeAlarm === (h + ":" + m) && !ringing) {
+                ringing = true;
+                audio.play().catch(() => { document.getElementById('alarmStatus').innerText = "🚨 CLICK SCREEN!"; });
+                document.getElementById('alarmActions').style.display = "flex";
+            }
+        }, 1000);
+
+        // --- Stopwatch Logic ---
+        let swInterval;
+        let startTime;
+        let elapsedTime = 0;
+
+        function startSW() {
+            if (!swInterval) {
+                startTime = Date.now() - elapsedTime;
+                swInterval = setInterval(updateSW, 10);
+            }
+        }
+        function pauseSW() { clearInterval(swInterval); swInterval = null; }
+        function resetSW() {
+            pauseSW(); elapsedTime = 0;
+            document.getElementById('sw-display').innerText = "00:00.00";
+        }
+        function updateSW() {
+            elapsedTime = Date.now() - startTime;
+            let m = Math.floor(elapsedTime / 60000).toString().padStart(2, '0');
+            let s = Math.floor((elapsedTime % 60000) / 1000).toString().padStart(2, '0');
+            let ms = Math.floor((elapsedTime % 1000) / 10).toString().padStart(2, '0');
+            document.getElementById('sw-display').innerText = `${m}:${s}.${ms}`;
+        }
+
+        // Battery & Weather
+        navigator.getBattery?.().then(b => {
             const u = () => document.getElementById('battery').innerText = `🔋 ${Math.round(b.level * 100)}%`;
             u(); b.onlevelchange = u;
         });
+
+        // Initial settings
+        window.onload = () => {
+            const saved = localStorage.getItem('accentColor') || '#04fc43';
+            changeAccent(saved);
+            document.getElementById('accentPicker').value = saved;
+        };
     </script>
 </body>
 </html>
