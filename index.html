@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Smart Clock - Elite Edition</title>
+    <title>Elite Pro Clock - MultiColor Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
@@ -13,8 +13,10 @@
             --shadow-light: #ffffff;
             --shadow-dark: #bebebe;
             --accent-color: #04fc43;
+            /* Hand Colors */
             --hr-color: #ff4d4d;
             --mn-color: #0080ff;
+            --sc-color: #ffd700;
         }
 
         [data-theme="dark"] {
@@ -31,10 +33,10 @@
             min-height: 100vh; background: var(--bg-color); padding: 20px;
         }
 
-        /* Essential for Sound on Mobile */
+        /* Sound Unlock Overlay */
         #sound-gate {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 9999;
+            background: rgba(0,0,0,0.9); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: white; cursor: pointer; text-align: center;
         }
@@ -58,76 +60,79 @@
             padding: 40px 25px; width: 100%; max-width: 380px;
         }
 
-        #weather-info { font-size: 0.85em; font-weight: 600; color: var(--accent-color); margin-bottom: 15px; text-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        #weather-info { font-size: 0.85em; font-weight: 600; color: var(--accent-color); margin-bottom: 15px; }
 
         .clock-face {
-            position: relative; width: 230px; height: 230px;
+            position: relative; width: 220px; height: 220px;
             background: var(--bg-color); border-radius: 50%;
             box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light),
                         inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
-            display: flex; justify-content: center; align-items: center; margin-bottom: 30px;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
         }
 
         .clock-face span { position: absolute; inset: 15px; text-align: center; color: var(--text-color); transform: rotate(calc(30deg * var(--i))); opacity: 0.5; font-weight: 600; }
         .clock-face span b { display: inline-block; transform: rotate(calc(-30deg * var(--i))); }
 
         .hand { position: absolute; display: flex; justify-content: center; transform-origin: bottom; border-radius: 10px; }
-        #hr-hand { width: 8px; height: 60px; background: var(--hr-color); bottom: 50%; z-index: 10; box-shadow: 0 0 10px var(--hr-color); }
-        #mn-hand { width: 5px; height: 80px; background: var(--mn-color); bottom: 50%; z-index: 11; box-shadow: 0 0 10px var(--mn-color); }
-        #sc-hand { width: 2px; height: 95px; background: var(--accent-color); bottom: 50%; z-index: 12; box-shadow: 0 0 10px var(--accent-color); }
-        .center-dot { position: absolute; width: 12px; height: 12px; background: var(--text-color); border-radius: 50%; z-index: 15; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        #hr-hand { width: 8px; height: 55px; background: var(--hr-color); bottom: 50%; z-index: 10; box-shadow: 0 0 8px var(--hr-color); }
+        #mn-hand { width: 5px; height: 75px; background: var(--mn-color); bottom: 50%; z-index: 11; box-shadow: 0 0 8px var(--mn-color); }
+        #sc-hand { width: 2px; height: 90px; background: var(--sc-color); bottom: 50%; z-index: 12; box-shadow: 0 0 8px var(--sc-color); }
+        .center-dot { position: absolute; width: 12px; height: 12px; background: var(--text-color); border-radius: 50%; z-index: 15; }
 
+        /* Digital Display with Different Colors */
         .digital-display {
-            font-size: 2.2em; font-weight: 700; color: var(--accent-color); /* Changed from black to accent color */
-            background: var(--bg-color); padding: 15px 30px; border-radius: 25px; margin-bottom: 25px;
+            font-size: 2em; font-weight: 700; 
+            background: var(--bg-color); padding: 15px 25px; border-radius: 25px; margin-bottom: 25px;
             box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
-            text-shadow: 0 0 15px var(--accent-color);
+            display: flex; gap: 5px;
         }
+        .d-hr { color: var(--hr-color); text-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
+        .d-mn { color: var(--mn-color); text-shadow: 0 0 10px rgba(0, 128, 255, 0.4); }
+        .d-sc { color: var(--sc-color); text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+        .d-sep { color: var(--text-color); opacity: 0.5; }
 
-        .inputs { width: 100%; display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .inputs { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: center; }
         
         select, input[type="time"] {
             width: 90%; background: var(--bg-color); border: none; padding: 12px; border-radius: 15px;
             box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-            color: var(--text-color); outline: none; font-weight: 600;
+            color: var(--text-color); outline: none; font-weight: 600; text-align: center;
         }
 
+        .btn-row { display: flex; gap: 10px; width: 90%; justify-content: center; }
         .btn-set {
-            padding: 15px 40px; border-radius: 30px; border: none; cursor: pointer;
-            background: var(--bg-color); color: var(--text-color); font-weight: 700;
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
-            margin-top: 10px;
+            padding: 12px 20px; border-radius: 25px; border: none; cursor: pointer;
+            background: var(--bg-color); color: var(--text-color); font-weight: 700; font-size: 0.8em;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
         }
-
-        .btn-set:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+        .btn-set:active { box-shadow: inset 3px 3px 6px var(--shadow-dark); }
         
-        #stop-btn { color: #ff2972; display: none; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        #stop-btn { color: #ff2972; display: none; }
+        #snooze-btn { color: #ffa500; display: none; }
         
-        #alarm-log { color: var(--accent-color); font-size: 0.8em; font-weight: 700; margin-top: 10px; height: 20px; }
+        #alarm-log { color: var(--accent-color); font-size: 0.8em; font-weight: 700; margin-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="sound-gate" onclick="unlockAudio()">
-        <h1 style="font-size: 3em;">🔔</h1>
-        <p style="margin-top:20px; font-weight: 600;">TAP TO ACTIVATE SMART CLOCK</p>
-        <span style="font-size: 0.7em; opacity: 0.6; margin-top: 10px;">(Required for alarm sound)</span>
+        <h1 style="font-size: 3.5em;">🔔</h1>
+        <p style="margin-top:20px; font-weight: 600; letter-spacing: 1px;">TAP TO START CLOCK</p>
     </div>
 
     <div class="top-bar">
         <div class="pill">🔋 <span id="bat-level">--%</span></div>
         <div class="pill">🎨 <input type="color" id="colorInput" oninput="setThemeColor(this.value)" style="width:20px; height:20px; border:none; background:none; cursor:pointer;"></div>
-        <button class="pill" onclick="fetchWeather()">🌡️ Weather</button>
-        <button class="pill" onclick="toggleMode()">🌓 Mode</button>
+        <button class="pill" onclick="fetchWeather()">🌡️ Refresh</button>
+        <button class="pill" onclick="toggleTheme()">🌓 Theme</button>
     </div>
 
     <audio id="mainAudio" loop>
-        <source id="audioSrc" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
-        <div id="weather-info">Waiting for location...</div>
+        <div id="weather-info">Weather: Loading...</div>
         
         <div class="clock-face">
             <div class="center-dot"></div>
@@ -138,22 +143,30 @@
             <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span><span style="--i:3;"><b>3</b></span>
             <span style="--i:4;"><b>4</b></span><span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span>
             <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span><span style="--i:9;"><b>9</b></span>
-            <span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
+            <span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>12</b></span><span style="--i:12;"><b>12</b></span>
         </div>
 
-        <div class="digital-display" id="digi-clock">00:00:00</div>
+        <div class="digital-display">
+            <span class="d-hr" id="dh">00</span><span class="d-sep">:</span>
+            <span class="d-mn" id="dm">00</span><span class="d-sep">:</span>
+            <span class="d-sc" id="ds">00</span>
+        </div>
 
         <div class="inputs">
             <select id="tone-select" onchange="previewTone()">
                 <option value="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3">Elite Bell</option>
                 <option value="https://www.soundjay.com/buttons/beep-01a.mp3">Digital Pulse</option>
-                <option value="https://www.soundjay.com/clock/alarm-clock-01.mp3">Retro Classic</option>
+            </audio>
             </select>
 
             <input type="time" id="alarm-time">
             
-            <button class="btn-set" onclick="saveAlarm()">SET ALARM</button>
-            <button class="btn-set" id="stop-btn" onclick="killAlarm()">STOP ALARM</button>
+            <button class="btn-set" onclick="saveAlarm()" style="width: 90%;">SET ALARM</button>
+            
+            <div class="btn-row">
+                <button class="btn-set" id="snooze-btn" onclick="snooze()">SNOOZE (5m)</button>
+                <button class="btn-set" id="stop-btn" onclick="stopAlarm()">STOP</button>
+            </div>
             
             <p id="alarm-log"></p>
         </div>
@@ -161,111 +174,116 @@
 
     <script>
         const audio = document.getElementById('mainAudio');
-        let targetAlarm = null;
-        let alarmTriggered = false;
+        let targetTime = null;
+        let isRinging = false;
 
-        // 1. SOUND FIX: Unlock on interaction
         function unlockAudio() {
             audio.play().then(() => {
                 audio.pause();
                 audio.currentTime = 0;
                 document.getElementById('sound-gate').style.display = 'none';
-            }).catch(e => console.error("Interaction required"));
+            });
         }
 
-        // 2. THEME & COLOR
         function setThemeColor(clr) {
             document.documentElement.style.setProperty('--accent-color', clr);
-            localStorage.setItem('eliteClockColor', clr);
+            localStorage.setItem('userAccent', clr);
         }
 
-        function toggleMode() {
-            const body = document.body;
-            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        function toggleTheme() {
+            const b = document.body;
+            b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
         }
 
-        // 3. ALARM CONTROLS
         function previewTone() {
             audio.src = document.getElementById('tone-select').value;
             audio.play();
-            setTimeout(() => { if(!alarmTriggered) audio.pause(); }, 2000);
+            setTimeout(() => { if(!isRinging) audio.pause(); }, 2000);
         }
 
         function saveAlarm() {
             const val = document.getElementById('alarm-time').value;
             if(val) {
-                targetAlarm = val;
-                document.getElementById('alarm-log').innerText = "⏰ Set for " + targetAlarm;
-                alert("Alarm successfully locked!");
+                targetTime = val;
+                document.getElementById('alarm-log').innerText = "⏰ Locked: " + targetTime;
+                isRinging = false;
             }
         }
 
-        function killAlarm() {
+        function stopAlarm() {
             audio.pause();
             audio.currentTime = 0;
-            alarmTriggered = false;
-            targetAlarm = null;
+            isRinging = false;
+            targetTime = null;
             document.getElementById('stop-btn').style.display = 'none';
-            document.getElementById('alarm-log').innerText = "Alarm cleared.";
+            document.getElementById('snooze-btn').style.display = 'none';
+            document.getElementById('alarm-log').innerText = "Alarm Stopped.";
         }
 
-        // 4. MAIN CLOCK ENGINE
+        function snooze() {
+            audio.pause();
+            audio.currentTime = 0;
+            isRinging = false;
+            
+            let now = new Date();
+            now.setMinutes(now.getMinutes() + 5);
+            let h = now.getHours().toString().padStart(2,'0');
+            let m = now.getMinutes().toString().padStart(2,'0');
+            
+            targetTime = h + ":" + m;
+            document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('snooze-btn').style.display = 'none';
+            document.getElementById('alarm-log').innerText = "💤 Snoozed until " + targetTime;
+        }
+
         setInterval(() => {
             const now = new Date();
             const h = now.getHours();
             const m = now.getMinutes();
             const s = now.getSeconds();
 
-            // Hands Rotation
+            // Analog Update
             document.getElementById('hr-hand').style.transform = `rotate(${(h * 30) + (m / 2)}deg)`;
             document.getElementById('mn-hand').style.transform = `rotate(${m * 6}deg)`;
             document.getElementById('sc-hand').style.transform = `rotate(${s * 6}deg)`;
 
-            // Digital Update
-            const hStr = h.toString().padStart(2, '0');
-            const mStr = m.toString().padStart(2, '0');
-            const sStr = s.toString().padStart(2, '0');
-            document.getElementById('digi-clock').innerText = `${hStr}:${mStr}:${sStr}`;
+            // Digital Multicolor Update
+            const hStr = h.toString().padStart(2,'0');
+            const mStr = m.toString().padStart(2,'0');
+            const sStr = s.toString().padStart(2,'0');
+            
+            document.getElementById('dh').innerText = hStr;
+            document.getElementById('dm').innerText = mStr;
+            document.getElementById('ds').innerText = sStr;
 
-            // Alarm Trigger Logic
-            if(targetAlarm === `${hStr}:${mStr}` && s === 0 && !alarmTriggered) {
-                alarmTriggered = true;
+            // Trigger Logic
+            if(targetTime === `${hStr}:${mStr}` && s === 0 && !isRinging) {
+                isRinging = true;
                 audio.play();
                 document.getElementById('stop-btn').style.display = 'block';
+                document.getElementById('snooze-btn').style.display = 'block';
             }
         }, 1000);
 
-        // 5. WEATHER & API
         function fetchWeather() {
             const key = "ca20508697617b874b4c2487d2b91370"; 
-            document.getElementById('weather-info').innerText = "Locating...";
-            
-            navigator.geolocation.getCurrentPosition(pos => {
-                fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${key}&units=metric`)
-                .then(res => res.json())
-                .then(data => {
+            navigator.geolocation.getCurrentPosition(p => {
+                fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${p.coords.latitude}&lon=${p.coords.longitude}&appid=${key}&units=metric`)
+                .then(r => r.json()).then(data => {
                     document.getElementById('weather-info').innerText = `${data.name}: ${Math.round(data.main.temp)}°C | ${data.weather[0].main}`;
-                }).catch(() => document.getElementById('weather-info').innerText = "Weather Error");
-            }, () => {
-                document.getElementById('weather-info').innerText = "GPS Access Denied";
-            });
+                }).catch(() => document.getElementById('weather-info').innerText = "Weather unavailable");
+            }, () => document.getElementById('weather-info').innerText = "GPS off");
         }
 
-        // Battery
-        if(navigator.getBattery) {
-            navigator.getBattery().then(bat => {
-                const update = () => document.getElementById('bat-level').innerText = Math.round(bat.level * 100) + "%";
-                update(); bat.onlevelchange = update;
-            });
-        }
+        if(navigator.getBattery) navigator.getBattery().then(b => {
+            const u = () => document.getElementById('bat-level').innerText = Math.round(b.level * 100) + "%";
+            u(); b.onlevelchange = u;
+        });
 
         window.onload = () => {
-            const savedClr = localStorage.getItem('eliteClockColor');
-            if(savedClr) {
-                setThemeColor(savedClr);
-                document.getElementById('colorInput').value = savedClr;
-            }
             fetchWeather();
+            const saved = localStorage.getItem('userAccent');
+            if(saved) setThemeColor(saved);
         };
     </script>
 </body>
