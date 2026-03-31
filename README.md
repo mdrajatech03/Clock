@@ -20,6 +20,7 @@ A stylish, accurate, and responsive Digital Clock web application. This project 
 ## Screenshot 
 ![Clock Screenshot](1.jpg)
 ![Clock Screenshot](2.jpg)
+![Clock Screenshot](3.jpg)
 
 ## 🛠️ Tech Stack
 
