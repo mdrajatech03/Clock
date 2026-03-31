@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Pro Clock - MultiColor Edition</title>
+    <title>Elite Pro Clock - Stopwatch Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
@@ -13,7 +13,6 @@
             --shadow-light: #ffffff;
             --shadow-dark: #bebebe;
             --accent-color: #04fc43;
-            /* Hand Colors */
             --hr-color: #ff4d4d;
             --mn-color: #0080ff;
             --sc-color: #ffd700;
@@ -33,10 +32,9 @@
             min-height: 100vh; background: var(--bg-color); padding: 20px;
         }
 
-        /* Sound Unlock Overlay */
         #sound-gate {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 9999;
+            background: rgba(0,0,0,0.95); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: white; cursor: pointer; text-align: center;
         }
@@ -47,244 +45,216 @@
         }
 
         .pill {
-            padding: 10px 15px; border-radius: 20px; font-size: 0.75em; font-weight: 700;
+            padding: 8px 12px; border-radius: 20px; font-size: 0.7em; font-weight: 700;
             background: var(--bg-color); color: var(--text-color); border: none;
             box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-            cursor: pointer; display: flex; align-items: center; gap: 5px;
+            cursor: pointer;
         }
 
         .container {
             background: var(--bg-color); border-radius: 50px;
             box-shadow: 25px 25px 50px var(--shadow-dark), -25px -25px 50px var(--shadow-light);
             display: flex; flex-direction: column; align-items: center;
-            padding: 40px 25px; width: 100%; max-width: 380px;
+            padding: 30px 20px; width: 100%; max-width: 380px;
         }
 
-        #weather-info { font-size: 0.85em; font-weight: 600; color: var(--accent-color); margin-bottom: 15px; }
+        .tabs { display: flex; gap: 15px; margin-bottom: 20px; }
+        .tab-btn {
+            font-size: 0.8em; padding: 10px 20px; border-radius: 15px; border: none; background: var(--bg-color);
+            color: var(--text-color); font-weight: 700; cursor: pointer;
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+        }
+        .tab-btn.active { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); color: var(--accent-color); }
+
+        .section { width: 100%; display: none; flex-direction: column; align-items: center; }
+        .active-section { display: flex; }
 
         .clock-face {
-            position: relative; width: 220px; height: 220px;
+            position: relative; width: 210px; height: 210px;
             background: var(--bg-color); border-radius: 50%;
             box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light),
                         inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
-            display: flex; justify-content: center; align-items: center; margin-bottom: 25px;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 20px;
         }
 
-        .clock-face span { position: absolute; inset: 15px; text-align: center; color: var(--text-color); transform: rotate(calc(30deg * var(--i))); opacity: 0.5; font-weight: 600; }
+        .clock-face span { position: absolute; inset: 15px; text-align: center; color: var(--text-color); transform: rotate(calc(30deg * var(--i))); opacity: 0.5; font-size: 0.9em; }
         .clock-face span b { display: inline-block; transform: rotate(calc(-30deg * var(--i))); }
 
-        .hand { position: absolute; display: flex; justify-content: center; transform-origin: bottom; border-radius: 10px; }
-        #hr-hand { width: 8px; height: 55px; background: var(--hr-color); bottom: 50%; z-index: 10; box-shadow: 0 0 8px var(--hr-color); }
-        #mn-hand { width: 5px; height: 75px; background: var(--mn-color); bottom: 50%; z-index: 11; box-shadow: 0 0 8px var(--mn-color); }
-        #sc-hand { width: 2px; height: 90px; background: var(--sc-color); bottom: 50%; z-index: 12; box-shadow: 0 0 8px var(--sc-color); }
-        .center-dot { position: absolute; width: 12px; height: 12px; background: var(--text-color); border-radius: 50%; z-index: 15; }
+        .hand { position: absolute; display: flex; justify-content: center; transform-origin: bottom; border-radius: 10px; bottom: 50%; }
+        #hr-hand { width: 7px; height: 50px; background: var(--hr-color); z-index: 10; box-shadow: 0 0 8px var(--hr-color); }
+        #mn-hand { width: 4px; height: 70px; background: var(--mn-color); z-index: 11; box-shadow: 0 0 8px var(--mn-color); }
+        #sc-hand { width: 2px; height: 85px; background: var(--sc-color); z-index: 12; box-shadow: 0 0 8px var(--sc-color); }
 
-        /* Digital Display with Different Colors */
-        .digital-display {
-            font-size: 2em; font-weight: 700; 
-            background: var(--bg-color); padding: 15px 25px; border-radius: 25px; margin-bottom: 25px;
-            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
-            display: flex; gap: 5px;
+        .display-box {
+            font-size: 1.8em; font-weight: 700; display: flex; gap: 5px;
+            background: var(--bg-color); padding: 12px 20px; border-radius: 20px; margin-bottom: 20px;
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
         }
-        .d-hr { color: var(--hr-color); text-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
-        .d-mn { color: var(--mn-color); text-shadow: 0 0 10px rgba(0, 128, 255, 0.4); }
-        .d-sc { color: var(--sc-color); text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
-        .d-sep { color: var(--text-color); opacity: 0.5; }
+        .d-hr { color: var(--hr-color); } .d-mn { color: var(--mn-color); } .d-sc { color: var(--sc-color); }
 
-        .inputs { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .sw-ms { font-size: 0.6em; color: var(--text-color); align-self: flex-end; padding-bottom: 5px; }
+
+        .controls { width: 100%; display: flex; flex-direction: column; gap: 10px; align-items: center; }
         
         select, input[type="time"] {
-            width: 90%; background: var(--bg-color); border: none; padding: 12px; border-radius: 15px;
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-            color: var(--text-color); outline: none; font-weight: 600; text-align: center;
+            width: 90%; background: var(--bg-color); border: none; padding: 10px; border-radius: 12px;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            color: var(--text-color); font-weight: 600; text-align: center;
         }
 
-        .btn-row { display: flex; gap: 10px; width: 90%; justify-content: center; }
-        .btn-set {
-            padding: 12px 20px; border-radius: 25px; border: none; cursor: pointer;
+        .btn {
+            padding: 12px 20px; border-radius: 20px; border: none; cursor: pointer;
             background: var(--bg-color); color: var(--text-color); font-weight: 700; font-size: 0.8em;
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
         }
-        .btn-set:active { box-shadow: inset 3px 3px 6px var(--shadow-dark); }
-        
-        #stop-btn { color: #ff2972; display: none; }
-        #snooze-btn { color: #ffa500; display: none; }
-        
-        #alarm-log { color: var(--accent-color); font-size: 0.8em; font-weight: 700; margin-top: 10px; text-align: center; }
+        .btn:active { box-shadow: inset 2px 2px 5px var(--shadow-dark); }
+        .btn-red { color: #ff2972; } .btn-orange { color: #ffa500; }
+
+        #alarm-actions { display: none; gap: 10px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div id="sound-gate" onclick="unlockAudio()">
-        <h1 style="font-size: 3.5em;">🔔</h1>
-        <p style="margin-top:20px; font-weight: 600; letter-spacing: 1px;">TAP TO START CLOCK</p>
+        <h1>🔔</h1>
+        <p style="margin-top:15px; font-weight: 600;">CLICK TO START</p>
     </div>
 
     <div class="top-bar">
-        <div class="pill">🔋 <span id="bat-level">--%</span></div>
-        <div class="pill">🎨 <input type="color" id="colorInput" oninput="setThemeColor(this.value)" style="width:20px; height:20px; border:none; background:none; cursor:pointer;"></div>
-        <button class="pill" onclick="fetchWeather()">🌡️ Refresh</button>
-        <button class="pill" onclick="toggleTheme()">🌓 Theme</button>
+        <div class="pill">🔋 <span id="bat">--%</span></div>
+        <div class="pill">🎨 <input type="color" id="cp" oninput="setAccent(this.value)" style="width:20px;height:20px;border:none;background:none;cursor:pointer;"></div>
+        <button class="pill" onclick="fetchWeather()">🌡️ Weather</button>
+        <button class="pill" onclick="toggleTheme()">🌓</button>
     </div>
 
-    <audio id="mainAudio" loop>
+    <audio id="alarmAudio" loop>
         <source src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
-        <div id="weather-info">Weather: Loading...</div>
-        
-        <div class="clock-face">
-            <div class="center-dot"></div>
-            <div class="hand" id="hr-hand"></div>
-            <div class="hand" id="mn-hand"></div>
-            <div class="hand" id="sc-hand"></div>
-            
-            <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span><span style="--i:3;"><b>3</b></span>
-            <span style="--i:4;"><b>4</b></span><span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span>
-            <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span><span style="--i:9;"><b>9</b></span>
-            <span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
+        <div class="tabs">
+            <button class="tab-btn active" id="t-clock" onclick="switchTab('clock')">Clock</button>
+            <button class="tab-btn" id="t-sw" onclick="switchTab('sw')">Stopwatch</button>
         </div>
 
-        <div class="digital-display">
-            <span class="d-hr" id="dh">00</span><span class="d-sep">:</span>
-            <span class="d-mn" id="dm">00</span><span class="d-sep">:</span>
-            <span class="d-sc" id="ds">00</span>
-        </div>
-
-        <div class="inputs">
-            <select id="tone-select" onchange="previewTone()">
-                <option value="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3">Elite Bell</option>
-                <option value="https://www.soundjay.com/buttons/beep-01a.mp3">Digital Pulse</option>
-            </audio>
-            </select>
-
-            <input type="time" id="alarm-time">
-            
-            <button class="btn-set" onclick="saveAlarm()" style="width: 90%;">SET ALARM</button>
-            
-            <div class="btn-row">
-                <button class="btn-set" id="snooze-btn" onclick="snooze()">SNOOZE (5m)</button>
-                <button class="btn-set" id="stop-btn" onclick="stopAlarm()">STOP</button>
+        <div id="sec-clock" class="section active-section">
+            <div id="weather-info" style="font-size:0.7em; color:var(--accent-color); margin-bottom:10px; font-weight:600;">Locating...</div>
+            <div class="clock-face">
+                <div id="hr-hand" class="hand"></div>
+                <div id="mn-hand" class="hand"></div>
+                <div id="sc-hand" class="hand"></div>
+                <span style="--i:1;"><b>1</b></span><span style="--i:2;"><b>2</b></span><span style="--i:3;"><b>3</b></span>
+                <span style="--i:4;"><b>4</b></span><span style="--i:5;"><b>5</b></span><span style="--i:6;"><b>6</b></span>
+                <span style="--i:7;"><b>7</b></span><span style="--i:8;"><b>8</b></span><span style="--i:9;"><b>9</b></span>
+                <span style="--i:10;"><b>10</b></span><span style="--i:11;"><b>11</b></span><span style="--i:12;"><b>12</b></span>
             </div>
-            
-            <p id="alarm-log"></p>
+            <div class="display-box">
+                <span class="d-hr" id="dh">00</span><span>:</span>
+                <span class="d-mn" id="dm">00</span><span>:</span>
+                <span class="d-sc" id="ds">00</span>
+            </div>
+            <div class="controls">
+                <input type="time" id="atime">
+                <button class="btn" onclick="setAlarm()" style="width:90%">SET ALARM</button>
+                <div id="alarm-actions">
+                    <button class="btn btn-orange" onclick="snooze()">SNOOZE (5m)</button>
+                    <button class="btn btn-red" onclick="stopAlarm()">STOP</button>
+                </div>
+                <p id="alog" style="font-size:0.75em; color:var(--accent-color); font-weight:700; margin-top:5px;"></p>
+            </div>
+        </div>
+
+        <div id="sec-sw" class="section">
+            <h3 style="margin-bottom:20px; font-size:0.9em; color:var(--text-color); opacity:0.6;">STOPWATCH</h3>
+            <div class="display-box">
+                <span class="d-hr" id="sw-m">00</span><span>:</span>
+                <span class="d-mn" id="sw-s">00</span><span class="sw-ms" id="sw-ms">.00</span>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn" onclick="startSW()">Start</button>
+                <button class="btn" onclick="pauseSW()">Pause</button>
+                <button class="btn btn-red" onclick="resetSW()">Reset</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById('mainAudio');
-        let targetTime = null;
-        let isRinging = false;
+        const audio = document.getElementById('alarmAudio');
+        let activeAlarm = null, ringing = false;
+        let swInterval, startTime, elapsed = 0;
 
         function unlockAudio() {
-            audio.play().then(() => {
-                audio.pause();
-                audio.currentTime = 0;
-                document.getElementById('sound-gate').style.display = 'none';
-            });
+            audio.play().then(() => { audio.pause(); audio.currentTime = 0; document.getElementById('sound-gate').style.display='none'; });
         }
 
-        function setThemeColor(clr) {
-            document.documentElement.style.setProperty('--accent-color', clr);
-            localStorage.setItem('userAccent', clr);
+        function switchTab(t) {
+            document.getElementById('sec-clock').classList.toggle('active-section', t==='clock');
+            document.getElementById('sec-sw').classList.toggle('active-section', t==='sw');
+            document.getElementById('t-clock').classList.toggle('active', t==='clock');
+            document.getElementById('t-sw').classList.toggle('active', t==='sw');
         }
 
-        function toggleTheme() {
-            const b = document.body;
-            b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        }
-
-        function previewTone() {
-            audio.src = document.getElementById('tone-select').value;
-            audio.play();
-            setTimeout(() => { if(!isRinging) audio.pause(); }, 2000);
-        }
-
-        function saveAlarm() {
-            const val = document.getElementById('alarm-time').value;
-            if(val) {
-                targetTime = val;
-                document.getElementById('alarm-log').innerText = "⏰ Locked: " + targetTime;
-                isRinging = false;
-            }
+        function setAlarm() {
+            let val = document.getElementById('atime').value;
+            if(val) { activeAlarm = val; document.getElementById('alog').innerText = "⏰ Set: " + val; ringing = false; }
         }
 
         function stopAlarm() {
-            audio.pause();
-            audio.currentTime = 0;
-            isRinging = false;
-            targetTime = null;
-            document.getElementById('stop-btn').style.display = 'none';
-            document.getElementById('snooze-btn').style.display = 'none';
-            document.getElementById('alarm-log').innerText = "Alarm Stopped.";
+            audio.pause(); audio.currentTime = 0; ringing = false; activeAlarm = null;
+            document.getElementById('alarm-actions').style.display = 'none';
+            document.getElementById('alog').innerText = "Stopped.";
         }
 
         function snooze() {
-            audio.pause();
-            audio.currentTime = 0;
-            isRinging = false;
-            
-            let now = new Date();
-            now.setMinutes(now.getMinutes() + 5);
-            let h = now.getHours().toString().padStart(2,'0');
-            let m = now.getMinutes().toString().padStart(2,'0');
-            
-            targetTime = h + ":" + m;
-            document.getElementById('stop-btn').style.display = 'none';
-            document.getElementById('snooze-btn').style.display = 'none';
-            document.getElementById('alarm-log').innerText = "💤 Snoozed until " + targetTime;
+            audio.pause(); ringing = false;
+            let now = new Date(); now.setMinutes(now.getMinutes() + 5);
+            activeAlarm = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+            document.getElementById('alarm-actions').style.display = 'none';
+            document.getElementById('alog').innerText = "Snoozed to " + activeAlarm;
         }
 
         setInterval(() => {
             const now = new Date();
-            const h = now.getHours();
-            const m = now.getMinutes();
-            const s = now.getSeconds();
+            const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            const hStr = h.toString().padStart(2,'0'), mStr = m.toString().padStart(2,'0'), sStr = s.toString().padStart(2,'0');
 
-            // Analog Update
-            document.getElementById('hr-hand').style.transform = `rotate(${(h * 30) + (m / 2)}deg)`;
-            document.getElementById('mn-hand').style.transform = `rotate(${m * 6}deg)`;
-            document.getElementById('sc-hand').style.transform = `rotate(${s * 6}deg)`;
-
-            // Digital Multicolor Update
-            const hStr = h.toString().padStart(2,'0');
-            const mStr = m.toString().padStart(2,'0');
-            const sStr = s.toString().padStart(2,'0');
-            
             document.getElementById('dh').innerText = hStr;
             document.getElementById('dm').innerText = mStr;
             document.getElementById('ds').innerText = sStr;
+            document.getElementById('hr-hand').style.transform = `rotate(${(h*30)+(m/2)}deg)`;
+            document.getElementById('mn-hand').style.transform = `rotate(${m*6}deg)`;
+            document.getElementById('sc-hand').style.transform = `rotate(${s*6}deg)`;
 
-            // Trigger Logic
-            if(targetTime === `${hStr}:${mStr}` && s === 0 && !isRinging) {
-                isRinging = true;
-                audio.play();
-                document.getElementById('stop-btn').style.display = 'block';
-                document.getElementById('snooze-btn').style.display = 'block';
+            if(activeAlarm === `${hStr}:${mStr}` && s === 0 && !ringing) {
+                ringing = true; audio.play();
+                document.getElementById('alarm-actions').style.display = 'flex';
             }
         }, 1000);
 
-        function fetchWeather() {
-            const key = "ca20508697617b874b4c2487d2b91370"; 
-            navigator.geolocation.getCurrentPosition(p => {
-                fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${p.coords.latitude}&lon=${p.coords.longitude}&appid=${key}&units=metric`)
-                .then(r => r.json()).then(data => {
-                    document.getElementById('weather-info').innerText = `${data.name}: ${Math.round(data.main.temp)}°C | ${data.weather[0].main}`;
-                }).catch(() => document.getElementById('weather-info').innerText = "Weather unavailable");
-            }, () => document.getElementById('weather-info').innerText = "GPS off");
+        function startSW() { if(!swInterval) { startTime = Date.now() - elapsed; swInterval = setInterval(updateSW, 10); } }
+        function pauseSW() { clearInterval(swInterval); swInterval = null; }
+        function resetSW() { pauseSW(); elapsed = 0; document.getElementById('sw-m').innerText="00"; document.getElementById('sw-s').innerText="00"; document.getElementById('sw-ms').innerText=".00"; }
+        function updateSW() {
+            elapsed = Date.now() - startTime;
+            let m = Math.floor(elapsed / 60000), s = Math.floor((elapsed % 60000) / 1000), ms = Math.floor((elapsed % 1000) / 10);
+            document.getElementById('sw-m').innerText = m.toString().padStart(2,'0');
+            document.getElementById('sw-s').innerText = s.toString().padStart(2,'0');
+            document.getElementById('sw-ms').innerText = "." + ms.toString().padStart(2,'0');
         }
 
-        if(navigator.getBattery) navigator.getBattery().then(b => {
-            const u = () => document.getElementById('bat-level').innerText = Math.round(b.level * 100) + "%";
+        function setAccent(c) { document.documentElement.style.setProperty('--accent-color', c); }
+        function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='dark'?'light':'dark'); }
+        function fetchWeather() {
+            navigator.geolocation.getCurrentPosition(p => {
+                fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${p.coords.latitude}&lon=${p.coords.longitude}&appid=ca20508697617b874b4c2487d2b91370&units=metric`)
+                .then(r => r.json()).then(data => document.getElementById('weather-info').innerText = `${data.name}: ${Math.round(data.main.temp)}°C`);
+            });
+        }
+        navigator.getBattery?.().then(b => {
+            const u = () => document.getElementById('bat').innerText = Math.round(b.level * 100) + "%";
             u(); b.onlevelchange = u;
         });
-
-        window.onload = () => {
-            fetchWeather();
-            const saved = localStorage.getItem('userAccent');
-            if(saved) setThemeColor(saved);
-        };
+        window.onload = fetchWeather;
     </script>
 </body>
 </html>
