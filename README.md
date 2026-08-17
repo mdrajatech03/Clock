@@ -4,7 +4,7 @@ A stylish, accurate, and responsive Digital Clock web application. This project 
 
 ## Live Demo 🌐
 
-**[Click Here](https://mdrajatech03.github.io/Clock/)**
+**[Click Here](https://clock-eight-umber-26.vercel.app/)**
 
 ## 🚀 Key Features
 
